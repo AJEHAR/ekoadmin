@@ -932,7 +932,7 @@ textarea.fc{min-height:80px;resize:vertical;line-height:1.65}
 // Dapatkan URL selepas deploy GAS dengan setting:
 //   Execute as  : Me
 //   Who has access: Anyone
-var GAS_URL = 'https://script.google.com/macros/s/AKfycbwhYv13kt2k6jFEuNiT6BREobbUAAN0DGa_KWW7jobqNtbZ74drdIv9MXnfWIYyGrlt/exec';
+var GAS_URL = 'TUKAR_KEPADA_URL_DEPLOYMENT_GAS_ANDA';
 
 /**
  * callGAS — ganti google.script.run untuk akses dari luar domain GAS.
@@ -1407,8 +1407,8 @@ function renderMuridModal(murid) {
   murid.forEach(function(m) {
     var dis = m.inUnit || m.isPenuh; var chk = m.inUnit;
     var lbl = m.isPenuh ? '<span class="bdg bdg-penuh" style="margin-left:4px">Penuh</span>' : m.inUnit ? '<span class="bdg bdg-ok" style="margin-left:4px">Dalam unit</span>' : '';
-    html += '<div class="cbrow' + (dis ? ' penuh' : '') + '" ' + (dis ? '' : 'onclick="toggleMuCheck(\'' + m.IC.replace(/'/g, '\\\'') + '\')"') + '>';
-    html += '<div class="cb' + (chk ? ' on' : '') + '" id="mc-' + m.IC.replace(/[^a-z0-9]/gi, '') + '">' + (chk ? '<i class="ti ti-check" style="font-size:12px;color:#fff"></i>' : '') + '</div>';
+    html += '<div class="cbrow' + (dis ? ' penuh' : '') + '" ' + (dis ? '' : 'onclick="toggleMuCheck(\'' + String(m.IC).replace(/'/g, '\\\'') + '\')"') + '>';
+    html += '<div class="cb' + (chk ? ' on' : '') + '" id="mc-' + String(m.IC).replace(/[^a-z0-9]/gi, '') + '">' + (chk ? '<i class="ti ti-check" style="font-size:12px;color:#fff"></i>' : '') + '</div>';
     html += '<div style="flex:1;min-width:0"><div style="font-size:var(--fs-sm);font-weight:500;color:var(--t)">' + esc(m.Nama) + lbl + '</div><div style="font-size:var(--fs-xs);color:var(--t3)">' + m.Kelas + ' · ' + m.Kategori + '</div></div></div>';
   });
   document.getElementById('mu-list').innerHTML = html; updateMuCount();
@@ -1417,7 +1417,7 @@ function toggleMuCheck(ic) { var cid = ic.replace(/[^a-z0-9]/gi, ''); var cb = d
 function updateMuCount() { setTxt('mu-count', document.querySelectorAll('#mu-list .cb.on').length); }
 function toggleSelectAll() { var rows = document.querySelectorAll('#mu-list .cbrow:not(.penuh)'); var allOn = document.querySelectorAll('#mu-list .cbrow:not(.penuh) .cb.on').length === rows.length; rows.forEach(function(row) { var cb = row.querySelector('.cb'); if (!cb) return; cb.classList.toggle('on', !allOn); cb.innerHTML = !allOn ? '<i class="ti ti-check" style="font-size:12px;color:#fff"></i>' : ''; }); updateMuCount(); }
 function doAddMuridBulk() {
-  var sel = []; document.querySelectorAll('#mu-list .cb.on').forEach(function(cb) { var cid = cb.id.replace('mc-', ''); var m = S.muridForUnit.find(function(m2) { return m2.IC.replace(/[^a-z0-9]/gi, '') === cid; }); if (m) sel.push(m.IC); });
+  var sel = []; document.querySelectorAll('#mu-list .cb.on').forEach(function(cb) { var cid = cb.id.replace('mc-', ''); var m = S.muridForUnit.find(function(m2) { return String(m2.IC).replace(/[^a-z0-9]/gi, '') === cid; }); if (m) sel.push(String(m.IC)); });
   if (!sel.length) { toast('Tiada murid dipilih', 'err'); return; }
   showLoad('Mendaftar murid...');
   callGAS('addAhliBulk', {icList: sel, unitId: S.selectedUnit.UnitID},
@@ -1485,17 +1485,17 @@ function renderDataMurid(murid) {
   }
   var html = '<div class="card">';
   murid.forEach(function(m) {
-    var isLF = S.muridLFChanges[m.IC] !== undefined ? S.muridLFChanges[m.IC] : String(m.LowFunctioning).toLowerCase() === 'ya';
+    var isLF = S.muridLFChanges[String(m.IC)] !== undefined ? S.muridLFChanges[String(m.IC)] : String(m.LowFunctioning).toLowerCase() === 'ya';
     html += '<div class="trow">';
     html += '<div style="flex:1;min-width:0">';
     html += '<div style="font-size:var(--fs-sm);font-weight:500;color:var(--t)">' + esc(m.Nama) + '</div>';
-    html += '<div style="font-size:var(--fs-xs);color:var(--t3)">' + esc(m.IC) + ' · ' + esc(m.Kelas || '—') + ' · Darjah ' + esc(m.Darjah || '—') + '</div>';
+    html += '<div style="font-size:var(--fs-xs);color:var(--t3)">' + esc(String(m.IC)) + ' · ' + esc(m.Kelas || '—') + ' · Darjah ' + esc(m.Darjah || '—') + '</div>';
     html += '<div style="font-size:var(--fs-xs);color:var(--t3)">' + esc(m.Kategori || '') + (m.NoOKU ? ' · ' + esc(m.NoOKU) : '') + '</div>';
     html += '</div>';
     html += '<div style="display:flex;align-items:center;gap:8px">';
     html += (isLF ? '<span class="bdg bdg-lf">LF</span>' : '');
-    html += '<div class="tg' + (isLF ? ' on' : '') + '" onclick="toggleLF(\'' + m.IC.replace(/'/g, '\\\'') + '\')" role="switch" aria-checked="' + (isLF ? 'true' : 'false') + '" title="Toggle Low Functioning"></div>';
-    html += '<div onclick="confirmDeleteMurid(\'' + m.IC.replace(/'/g, '\\\'') + '\',\'' + esc(m.Nama).replace(/'/g, '\\\'') + '\')" style="width:28px;height:28px;border-radius:50%;background:rgba(220,38,38,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" title="Padam"><i class="ti ti-trash" style="font-size:13px;color:var(--r)"></i></div>';
+    html += '<div class="tg' + (isLF ? ' on' : '') + '" onclick="toggleLF(\'' + String(m.IC).replace(/'/g, '\\\'') + '\')" role="switch" aria-checked="' + (isLF ? 'true' : 'false') + '" title="Toggle Low Functioning"></div>';
+    html += '<div onclick="confirmDeleteMurid(\'' + String(m.IC).replace(/'/g, '\\\'') + '\',\'' + esc(m.Nama).replace(/'/g, '\\\'') + '\')" style="width:28px;height:28px;border-radius:50%;background:rgba(220,38,38,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" title="Padam"><i class="ti ti-trash" style="font-size:13px;color:var(--r)"></i></div>';
     html += '</div></div>';
   });
   html += '</div>';
@@ -1628,7 +1628,7 @@ function downloadTemplate(type) {
 
 // — LF TOGGLE & SAVE (dikongsi) —
 function toggleLF(ic) {
-  var existing = S.muridList.find(function(m) { return m.IC === ic; });
+  var existing = S.muridList.find(function(m) { return String(m.IC) === String(ic); });
   var wasLF = S.muridLFChanges[ic] !== undefined ? S.muridLFChanges[ic] : String((existing || {}).LowFunctioning || '').toLowerCase() === 'ya';
   S.muridLFChanges[ic] = !wasLF;
   var activeEl = document.querySelector('#data-murid-darjah .fchip.act');
