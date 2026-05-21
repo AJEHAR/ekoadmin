@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>eKoCBA4082 — Admin</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.40.0/tabler-icons.min.css">
+<style>
+:root{
+  --p:#5B21B6; --pl:#7C3AED; --acc:#8B5CF6;
+  --g:#059669; --r:#DC2626; --am:#D97706; --tl:#0891B2;
+  --bg:#F5F3FF; --sur:#fff; --bdr:#EDE9FE; --bdr2:#C4B5FD;
+  --t:#1E1B4B; --t2:#6D28D9; --t3:#A78BFA;
+  --fs-xs:12px; --fs-sm:14px; --fs-base:15px; --fs-md:17px; --fs-lg:21px;
+  --r-sm:10px; --r-md:14px; --r-lg:20px;
+  --sh:0 4px 12px rgba(91,33,182,.08),0 1px 4px rgba(91,33,182,.05);
+  --sh2:0 10px 32px rgba(91,33,182,.14),0 2px 8px rgba(91,33,182,.08);
+  --grad-uni:linear-gradient(135deg,#1D4ED8 0%,#3B82F6 100%);
+  --grad-kla:linear-gradient(135deg,#065F46 0%,#10B981 100%);
+  --grad-sku:linear-gradient(135deg,#B45309 0%,#F59E0B 100%);
+  --grad-keb:linear-gradient(135deg,#5B21B6 0%,#8B5CF6 100%);
+  --grad-kes:linear-gradient(135deg,#9D174D 0%,#EC4899 100%);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;font-size:var(--fs-base);background:var(--bg);color:var(--t);-webkit-text-size-adjust:100%;padding-bottom:env(safe-area-inset-bottom)}
+button{cursor:pointer;border:none;background:none;font-family:inherit;font-size:inherit;-webkit-tap-highlight-color:transparent}
+input,textarea,select{font-family:inherit;font-size:inherit;-webkit-appearance:none}
+*:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:var(--r-sm)}
+
+#loader{position:fixed;inset:0;background:rgba(255,255,255,.92);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:2000;backdrop-filter:blur(2px)}
+#loader.show{display:flex}
+.spin{width:36px;height:36px;border:3px solid var(--bdr);border-top-color:var(--pl);border-radius:50%;animation:spin .7s linear infinite}
+.ld-txt{font-size:var(--fs-sm);color:var(--t2);font-weight:500}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skel{background:linear-gradient(90deg,#EAEFF8 25%,#DDE4F0 50%,#EAEFF8 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--r-sm)}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);min-width:200px;max-width:88vw;background:var(--p);color:#fff;padding:11px 20px;border-radius:24px;font-size:var(--fs-sm);font-weight:500;z-index:3000;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;box-shadow:var(--sh2)}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.err{background:var(--r)} #toast.ok{background:var(--g)} #toast.warn{background:var(--am)}
+
+/* NAV */
+#nav-bd{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:600;display:none;backdrop-filter:blur(1px)}
+#nav-bd.show{display:block}
+#snav{position:fixed;top:0;left:0;width:270px;height:100%;background:#fff;z-index:700;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:var(--sh2)}
+#snav.open{transform:translateX(0)}
+.snav-hd{background:linear-gradient(160deg,#3B0764 0%,#5B21B6 60%,#7C3AED 100%);padding:40px 18px 18px}
+.snav-app{font-size:var(--fs-md);font-weight:800;color:#fff;letter-spacing:.3px}
+.snav-scl{font-size:var(--fs-xs);color:rgba(255,255,255,.65);margin-top:5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.snav-yr{margin-top:12px;display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border-radius:20px;padding:4px 11px;font-size:var(--fs-xs);color:rgba(255,255,255,.85)}
+.ldot{width:7px;height:7px;background:#22C55E;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.snav-body{flex:1;padding:6px 0;overflow-y:auto}
+.ni{display:flex;align-items:center;gap:12px;padding:12px 18px;cursor:pointer;color:var(--t);font-size:var(--fs-sm);border-left:3px solid transparent;transition:background .15s,color .15s;-webkit-tap-highlight-color:transparent}
+.ni:hover{background:var(--bg)}
+.ni.act{background:#F5F3FF;color:var(--pl);font-weight:600;border-left-color:var(--pl)}
+.ni.act i{color:var(--pl)}
+.ni i{font-size:20px;color:var(--t3);width:22px;flex-shrink:0}
+.ni-divider{height:1px;background:var(--bdr);margin:6px 0}
+.snav-ft{padding:14px 18px;border-top:1px solid var(--bdr)}
+.n-logout{display:flex;align-items:center;gap:10px;color:var(--r);cursor:pointer;font-size:var(--fs-sm);font-weight:600;padding:6px 0}
+
+/* TOPBAR */
+.tb{background:linear-gradient(135deg,#3B0764 0%,#5B21B6 100%);border-bottom:none;padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 4px 16px rgba(91,33,182,.25)}
+.tb-icon{width:40px;height:40px;border-radius:var(--r-md);background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:#fff;transition:background .15s}
+.tb-icon:hover{background:rgba(255,255,255,.25)}
+.tb-title{flex:1;min-width:0}
+.tb-ttl{font-size:var(--fs-md);font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-sub{font-size:var(--fs-xs);color:rgba(255,255,255,.65);margin-top:2px}
+
+/* VIEWS */
+.view{display:none;min-height:100dvh}
+.view.act{display:block}
+.pc{padding:16px}
+.pc-max{padding:16px;max-width:900px;margin:0 auto}
+
+/* LAUNCHER */
+#vl{background:var(--bg)}
+.l-top{background:linear-gradient(135deg,#3B0764 0%,#5B21B6 100%);border-bottom:none;padding:16px 16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 4px 16px rgba(91,33,182,.25)}
+.l-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.l-logo{width:42px;height:42px;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.3);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0}
+.l-texts{min-width:0}
+.l-nm{font-size:var(--fs-md);font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.l-scl{font-size:var(--fs-xs);color:rgba(255,255,255,.65);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yr-chip{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:var(--fs-xs);padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;flex-shrink:0;white-space:nowrap}
+.l-body{padding:16px}
+.cat-sec{margin-bottom:20px}
+.cat-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cpill{font-size:var(--fs-xs);font-weight:700;padding:4px 12px;border-radius:12px;white-space:nowrap;letter-spacing:.03em}
+.pu{background:#DBEAFE;color:#1E40AF}.pk{background:#D1FAE5;color:#065F46}
+.ps{background:#FEF3C7;color:#92400E}.pb{background:#EDE9FE;color:#5B21B6}
+.pa{background:#F3E8FF;color:#6B21A8}
+.cline{flex:1;height:1px;background:var(--bdr)}
+.cnum{font-size:var(--fs-xs);color:var(--t2);font-weight:600;white-space:nowrap}
+.ugrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ucard{border-radius:18px;padding:18px 10px 16px;text-align:center;cursor:pointer;border:none;transition:all .18s;box-shadow:0 6px 20px rgba(0,0,0,.15);-webkit-tap-highlight-color:transparent;position:relative;overflow:hidden;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ucard:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.22)}
+.ucard:active{transform:scale(.95)}
+.ucard::before{content:'';position:absolute;top:-30px;right:-20px;width:80px;height:80px;background:rgba(255,255,255,.1);border-radius:50%}
+.ucard::after{content:'';position:absolute;bottom:-20px;left:-15px;width:60px;height:60px;background:rgba(255,255,255,.07);border-radius:50%}
+.u-ico{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;overflow:hidden;font-size:26px;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.3);position:relative;z-index:1}
+.u-ico img{width:100%;height:100%;object-fit:cover}
+.u-nm{font-size:var(--fs-sm);font-weight:700;color:#fff;line-height:1.35;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;position:relative;z-index:1}
+.u-ct{font-size:10px;color:rgba(255,255,255,.75);margin-top:5px;background:rgba(0,0,0,.15);padding:2px 8px;border-radius:10px;display:inline-block;position:relative;z-index:1}
+.c-uni{background:var(--grad-uni)}.c-kla{background:var(--grad-kla)}
+.c-sku{background:var(--grad-sku)}.c-keb{background:var(--grad-keb)}
+.c-kes{background:var(--grad-kes)}.c-adm{background:linear-gradient(135deg,#374151 0%,#6B7280 100%)}
+
+/* CARDS & LIST */
+.card{background:#fff;border-radius:var(--r-md);border:1.5px solid var(--bdr);overflow:hidden;margin-bottom:14px;box-shadow:var(--sh)}
+.card-hd,.card-bd{padding:14px 16px}
+.card-hd{border-bottom:1.5px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.card-ttl{font-size:var(--fs-sm);font-weight:700;color:var(--t)}
+.li{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1.5px solid var(--bdr);transition:background .12s}
+.li:last-child{border-bottom:none}
+.clickable{cursor:pointer}
+.clickable:hover{background:#FAF5FF}
+.av{width:42px;height:42px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:var(--fs-sm);font-weight:700;flex-shrink:0}
+.av-b{background:#EDE9FE;color:#5B21B6}.av-g{background:#ECFDF5;color:var(--g)}
+.av-r{background:#FEF2F2;color:var(--r)}.av-p{background:#F5F3FF;color:#7C3AED}
+.li-info{flex:1;min-width:0}
+.li-nm{font-size:var(--fs-sm);font-weight:600;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-sub{font-size:var(--fs-xs);color:#8B5CF6;margin-top:3px}
+.sec-ttl{font-size:var(--fs-xs);font-weight:700;color:#5B21B6;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+
+/* BADGES */
+.bdg{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:3px}
+.bdg-ok{background:#ECFDF5;color:#065F46;border:1px solid #6EE7B7}
+.bdg-dr{background:#FEF3C7;color:#92400E;border:1px solid #FDE68A}
+.bdg-pn{background:#EDE9FE;color:#3730A3;border:1px solid #C7D2FE}
+.bdg-pb{background:#ECFDF5;color:#065F46;border:1px solid #6EE7B7}
+.bdg-lf{background:#FEF3C7;color:#92400E;border:1px solid #FDE68A}
+.bdg-of{background:#F5F3FF;color:#8B5CF6;border:1px solid var(--bdr)}
+.bdg-penuh{background:#FEE2E2;color:#B91C1C;border:1px solid #FECACA}
+.bdg-mp{background:#EDE9FE;color:#3730A3;border:1px solid #C7D2FE}
+.bdg-pd{background:#ECFEFF;color:#0E7490;border:1px solid #A5F3FC}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 20px;border-radius:var(--r-md);font-size:var(--fs-sm);font-weight:600;cursor:pointer;transition:all .15s;border:none;-webkit-tap-highlight-color:transparent;letter-spacing:.01em}
+.btn:active{transform:scale(.97)}
+.btn-p{background:linear-gradient(135deg,#5B21B6 0%,#7C3AED 100%);color:#fff;box-shadow:0 4px 14px rgba(91,33,182,.35)}.btn-p:hover{background:linear-gradient(135deg,#4C1D95 0%,#6D28D9 100%)}
+.btn-g{background:#ECFDF5;color:var(--g);border:1.5px solid #6EE7B7}.btn-g:hover{background:#D1FAE5}
+.btn-o{background:#fff;border:1.5px solid var(--bdr2);color:#5B21B6;font-weight:600}.btn-o:hover{background:#F5F3FF;border-color:var(--acc)}
+.btn-d{background:#FEE2E2;color:var(--r);border:1.5px solid #FECACA}.btn-d:hover{background:#FECACA}
+.btn-sm{padding:8px 14px;font-size:var(--fs-xs)}
+.btn-bl{width:100%}
+.btn-ic{width:38px;height:38px;padding:0;border-radius:var(--r-sm);flex-shrink:0}
+
+/* FORMS */
+.fg{margin-bottom:16px}
+.fl{font-size:var(--fs-xs);font-weight:700;color:#5B21B6;margin-bottom:7px;display:block;letter-spacing:.02em}
+.fc{width:100%;padding:12px 14px;border:2px solid var(--bdr);border-radius:var(--r-sm);font-size:var(--fs-sm);color:var(--t);background:#fff;outline:none;transition:border-color .15s,box-shadow .15s}
+.fc:focus{border-color:var(--acc);box-shadow:0 0 0 4px rgba(139,92,246,.15)}
+.fc.error{border-color:var(--r);background:#FFF8F8}
+.field-err{font-size:var(--fs-xs);color:var(--r);margin-top:4px;display:none}
+.field-err.show{display:block}
+textarea.fc{min-height:80px;resize:vertical;line-height:1.65}
+.fc-sel{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235B21B6' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-color:#fff;padding-right:36px;cursor:pointer}
+
+/* FORM SECTION */
+.form-section{background:#FAF5FF;border:1.5px solid #EDE9FE;border-radius:var(--r-md);padding:16px;margin-bottom:16px}
+.form-sec-hd{font-size:var(--fs-xs);font-weight:700;color:#5B21B6;text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.form-sec-hd i{font-size:15px;color:#7C3AED}
+
+/* STAT ROW */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1.5px solid var(--bdr);overflow:hidden;box-shadow:var(--sh)}
+.sr-box{padding:14px 6px;text-align:center;border-right:1.5px solid var(--bdr)}
+.sr-box:last-child{border-right:none}
+.sr-n{font-size:22px;font-weight:800;line-height:1}
+.sr-l{font-size:10px;color:#8B5CF6;margin-top:5px;line-height:1.3;font-weight:600}
+.n-bl{color:#2563EB}.n-gr{color:var(--g)}.n-rd{color:var(--r)}.n-am{color:var(--am)}.n-nv{color:#5B21B6}
+
+/* FILTER CHIPS */
+.fc-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.fchip{padding:5px 12px;border-radius:20px;font-size:var(--fs-xs);font-weight:500;cursor:pointer;border:2px solid var(--bdr2);color:#5B21B6;background:#fff;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.fchip.act{background:linear-gradient(135deg,#5B21B6,#7C3AED);color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(91,33,182,.3)}
+
+/* TOGGLE */
+.trow{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1.5px solid var(--bdr)}
+.trow:last-child{border-bottom:none}
+.tg{width:44px;height:24px;background:#E2E8F0;border-radius:12px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.tg.on{background:#7C3AED}
+.tg::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.tg.on::after{transform:translateX(20px)}
+
+/* CHECKBOX */
+.cbrow{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1.5px solid var(--bdr);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
+.cbrow:last-child{border-bottom:none}
+.cbrow:hover{background:#FAF5FF}
+.cbrow.penuh{opacity:.45;cursor:not-allowed}
+.cb{width:22px;height:22px;border-radius:var(--r-sm);border:2px solid var(--bdr2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.cb.on{background:#7C3AED;border-color:#7C3AED}
+
+/* UPLOAD ZONE */
+.uz{border:2px dashed var(--bdr2);border-radius:var(--r-md);padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;background:#FAF5FF;margin-bottom:14px}
+.uz:hover{border-color:var(--acc);background:#EDE9FE}
+.uz i{font-size:38px;color:#A78BFA;margin-bottom:12px;display:block}
+.uz-ttl{font-size:var(--fs-sm);font-weight:700;color:#5B21B6;margin-bottom:4px}
+.uz-sub{font-size:var(--fs-xs);color:#8B5CF6}
+
+/* TABLE */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-md);border:1.5px solid var(--bdr)}
+.tbl{width:100%;border-collapse:collapse;font-size:var(--fs-xs)}
+.tbl th{padding:9px 12px;text-align:left;background:#F5F3FF;color:#5B21B6;font-weight:700;border-bottom:1.5px solid var(--bdr);white-space:nowrap}
+.tbl td{padding:10px 12px;border-bottom:1.5px solid var(--bdr);color:var(--t)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:#FAF5FF}
+
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:flex-end;justify-content:center;z-index:800;backdrop-filter:blur(2px)}
+.ov.show{display:flex}
+.ms{background:#fff;border-radius:var(--r-lg) var(--r-lg) 0 0;width:100%;max-width:520px;max-height:92dvh;overflow-y:auto;padding:20px;animation:su .28s cubic-bezier(.34,1.4,.64,1)}
+@media(min-width:560px){.ov{align-items:center}.ms{border-radius:var(--r-lg);max-height:88dvh;width:calc(100% - 32px);margin:16px}}
+@keyframes su{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.ms-handle{width:40px;height:4px;background:var(--bdr);border-radius:2px;margin:0 auto 16px}
+.ms-ttl{font-size:var(--fs-md);font-weight:700;color:var(--t);margin-bottom:16px}
+
+/* TANDATANGAN MODAL */
+#ov-sign{z-index:1500}
+#ov-sign .ms{max-width:520px}
+.sign-canvas-wrap{border:2px solid var(--bdr);border-radius:var(--r-sm);background:#fff;overflow:hidden;margin-bottom:12px;position:relative;touch-action:none}
+#sign-canvas{display:block;width:100%;height:220px;cursor:crosshair;touch-action:none}
+.sign-empty-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:var(--fs-sm);color:var(--t3)}
+.sign-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.sign-color{width:28px;height:28px;border-radius:50%;border:2px solid var(--bdr);cursor:pointer;flex-shrink:0;transition:border-color .15s}
+.sign-color.act{border-color:var(--acc);border-width:3px}
+.sign-sz{width:80px}
+
+/* PIN SCREEN — full page keyboard-first */
+#vpin{
+  position:fixed;inset:0;z-index:900;
+  background:linear-gradient(160deg,#3B0764 0%,#5B21B6 55%,#7C3AED 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;
+}
+#vpin.hide{display:none}
+.pin-card{
+  background:#fff;border-radius:24px;
+  width:100%;max-width:340px;
+  padding:32px 28px 28px;
+  box-shadow:0 32px 80px rgba(0,0,0,.35);
+  animation:pinIn .3s cubic-bezier(.34,1.4,.64,1);
+}
+@keyframes pinIn{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.pin-card.shake{animation:shake .4s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-8px)}30%{transform:translateX(7px)}45%{transform:translateX(-6px)}60%{transform:translateX(5px)}75%{transform:translateX(-3px)}90%{transform:translateX(2px)}}
+.pin-brand{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.pin-brand-ico{width:44px;height:44px;background:linear-gradient(135deg,#5B21B6,#8B5CF6);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0}
+.pin-brand-txt{min-width:0}
+.pin-brand-nm{font-size:var(--fs-base);font-weight:800;color:var(--t);line-height:1.2}
+.pin-brand-sub{font-size:var(--fs-xs);color:#8B5CF6;margin-top:2px}
+.pin-lbl{font-size:var(--fs-xs);font-weight:700;color:#5B21B6;margin-bottom:8px;letter-spacing:.04em;text-transform:uppercase}
+.pin-input-wrap{position:relative;margin-bottom:10px}
+.pin-input-wrap input{
+  width:100%;padding:14px 46px 14px 16px;
+  border:2px solid var(--bdr);border-radius:var(--r-md);
+  font-size:22px;letter-spacing:8px;font-weight:700;color:var(--t);
+  background:#fff;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+  -webkit-appearance:none;
+}
+.pin-input-wrap input:focus{border-color:#7C3AED;box-shadow:0 0 0 4px rgba(124,58,237,.15)}
+.pin-input-wrap input.error{border-color:var(--r);box-shadow:0 0 0 4px rgba(220,38,38,.12)}
+.pin-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#A78BFA;cursor:pointer;padding:8px;font-size:18px;-webkit-tap-highlight-color:transparent;z-index:10;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.pin-eye:hover{color:#7C3AED}
+.pin-err{font-size:var(--fs-xs);color:var(--r);min-height:18px;margin-bottom:16px;font-weight:500;display:flex;align-items:center;gap:5px}
+.pin-err i{font-size:13px}
+.pin-submit{
+  width:100%;padding:14px;border-radius:var(--r-md);
+  background:linear-gradient(135deg,#5B21B6 0%,#7C3AED 100%);
+  color:#fff;font-size:var(--fs-sm);font-weight:700;
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 14px rgba(91,33,182,.4);
+  transition:all .15s;letter-spacing:.02em;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+.pin-submit:hover{background:linear-gradient(135deg,#4C1D95 0%,#6D28D9 100%)}
+.pin-submit:active{transform:scale(.98)}
+.pin-submit:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.pin-hint-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px;font-size:var(--fs-xs);color:#A78BFA}
+.pin-hint-row i{font-size:13px}
+.pin-scl{margin-top:20px;text-align:center;font-size:var(--fs-xs);color:rgba(255,255,255,.5);line-height:1.5}
+
+/* LOGO */
+.lp{width:82px;height:82px;border-radius:var(--r-lg);border:2px dashed var(--bdr2);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;margin:0 auto 10px;background:var(--bg);transition:border-color .15s}
+.lp:hover{border-color:var(--acc)}
+.lp img{width:100%;height:100%;object-fit:cover}
+.lp i{font-size:28px;color:#A78BFA}
+
+/* PHOTO BOXES */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.pbox{background:#FAF5FF;border:2px dashed var(--bdr2);border-radius:var(--r-md);aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s}
+.pbox:hover{border-color:var(--acc)}
+.pbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pbox-ico{font-size:26px;color:#A78BFA;margin-bottom:5px;position:relative;z-index:1}
+.pbox-lbl{font-size:var(--fs-xs);color:#8B5CF6;position:relative;z-index:1;font-weight:500}
+.pbox-del{position:absolute;top:7px;right:7px;width:28px;height:28px;background:rgba(220,38,38,.85);border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;cursor:pointer;z-index:3;backdrop-filter:blur(2px)}
+.pbox.has-img .pbox-del{display:flex}
+
+/* SIGN BOX */
+.sign-box{border:2px solid var(--bdr);border-radius:var(--r-md);padding:14px;background:#fff;cursor:pointer;transition:border-color .15s;min-height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;position:relative}
+.sign-box:hover{border-color:var(--acc);background:#FAF5FF}
+.sign-box.has-sign{border-color:#8B5CF6;background:#FAF5FF}
+.sign-box img{max-width:100%;max-height:60px;object-fit:contain}
+.sign-box-lbl{font-size:var(--fs-xs);color:#A78BFA;text-align:center;font-weight:500}
+.sign-box-name{font-size:var(--fs-xs);font-weight:700;color:#5B21B6;margin-top:4px;text-align:center}
+.sign-box-clear{position:absolute;top:6px;right:6px;width:24px;height:24px;background:rgba(220,38,38,.85);border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;cursor:pointer;z-index:2}
+.sign-box.has-sign .sign-box-clear{display:flex}
+.sign-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sign-gpk-row{margin-top:12px}
+
+/* PROGRESS */
+.prg-wrap{margin-bottom:14px}
+.prg-lbl{display:flex;justify-content:space-between;font-size:var(--fs-xs);color:var(--t2);margin-bottom:6px;font-weight:500}
+.prg-bar{height:7px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--bdr)}
+.prg-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--pl));border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:48px 20px}
+.empty-state i{font-size:44px;color:#C4B5FD;display:block;margin-bottom:14px}
+.empty-state h3{font-size:var(--fs-md);font-weight:700;color:var(--t);margin-bottom:8px}
+.empty-state p{font-size:var(--fs-sm);color:#8B5CF6;margin-bottom:22px;line-height:1.65}
+
+/* INFO ALERT */
+.info-alert{border-radius:var(--r-sm);padding:11px 14px;font-size:var(--fs-xs);line-height:1.6;margin-bottom:14px;display:flex;gap:8px}
+.ia-blue{background:#EFF6FF;border:1.5px solid #BFDBFE;color:#1D4ED8}
+.ia-amber{background:#FFFBEB;border:1.5px solid #FDE68A;color:var(--am)}
+
+/* DASHBOARD */
+.dash-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.ds-card{background:#fff;border-radius:var(--r-md);border:1.5px solid var(--bdr);padding:18px;text-align:center;box-shadow:var(--sh)}
+.ds-n{font-size:30px;font-weight:800;line-height:1;margin-bottom:5px}
+.ds-l{font-size:var(--fs-xs);color:#8B5CF6;font-weight:600}
+.qac-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.qac{background:#fff;border-radius:var(--r-md);border:1.5px solid var(--bdr);padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .18s;box-shadow:var(--sh)}
+.qac:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:var(--sh2)}
+.qac i{font-size:24px;color:#7C3AED;flex-shrink:0}
+.qac-nm{font-size:var(--fs-sm);font-weight:600;color:var(--t)}
+
+/* A4 PREVIEW */
+#va4{background:#EDE9FE;min-height:100dvh}
+.a4-tb{background:linear-gradient(135deg,#3B0764 0%,#5B21B6 100%);border-bottom:none;padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 4px 16px rgba(91,33,182,.25)}
+.a4-wrap{padding:12px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.a4-doc{background:#fff;min-width:580px;max-width:700px;margin:0 auto;border-radius:4px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.18);font-family:Arial,sans-serif}
+.a4-title{background:#1a5c4f;padding:14px 20px;text-align:center}
+.a4-title h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:.05em}
+.a4-table{width:100%;border-collapse:collapse;border:1px solid #888}
+.a4-table td,.a4-table th{border:1px solid #888;padding:7px 10px;font-size:12px;vertical-align:top;color:#1a1a1a}
+.a4-cell-green{background:#e8f5e9}
+.a4-cell-purple{background:#ede7f6}
+.a4-row-hdr{background:#c8e6c9;font-weight:600;text-align:center;font-size:12px}
+.a4-row-hdr-purple{background:#d1c4e9;font-weight:600;text-align:center;font-size:12px}
+.cell-lbl{font-weight:600;white-space:nowrap;background:#f5f5f5;width:110px}
+.a4-photo-col{width:120px;border-left:1px solid #888;vertical-align:top;padding:0}
+.a4-photo-slot{width:120px;height:100px;overflow:hidden;border-bottom:1px solid #888;display:flex;align-items:center;justify-content:center;background:#F8FAFC}
+.a4-photo-slot:last-child{border-bottom:none}
+.a4-photo-slot img{width:100%;height:100%;object-fit:cover}
+.a4-photo-slot i{font-size:20px;color:#ccc}
+.a4-sign-table{width:100%;border-collapse:collapse;margin-top:0}
+.a4-sign-table td{border:1px solid #888;padding:8px 10px;font-size:11px;text-align:center;vertical-align:top}
+.a4-sign-cell{min-height:70px}
+.a4-sign-img{max-width:120px;max-height:52px;object-fit:contain;display:block;margin:0 auto}
+.a4-sign-line{border-top:1px solid #888;margin-top:50px;margin-bottom:4px}
+.a4-sign-name{font-size:11px;font-weight:600;color:#1a1a1a}
+.a4-hdr-row{background:#c8e6c9}
+.a4-ft{background:#F8FAFC;border-top:1px solid var(--bdr);padding:8px 20px;display:flex;justify-content:space-between;align-items:center}
+.a4-ft-txt{font-size:9px;color:var(--t3)}
+.a4-status{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:600}
+.a4-s-draf{background:#FEF3C7;color:#92400E;border:1px solid #FDE68A}
+.a4-s-done{background:#ECFDF5;color:#065F46;border:1px solid #6EE7B7}
+
+.safe-bottom{height:env(safe-area-inset-bottom,0)}
+@media(min-width:768px){
+  .ugrid{grid-template-columns:repeat(3,1fr)}
+  .pc,.pc-max{padding:24px}
+  .dash-stats{grid-template-columns:repeat(4,1fr)}
+  .qac-grid{grid-template-columns:repeat(4,1fr)}
+}
+@media print{
+  @page{size:A4;margin:10mm}
+  #loader,#toast,#nav-bd,#snav,.a4-tb,.no-print{display:none!important}
+  body>*:not(#va4){display:none!important}
+  #va4{background:#fff!important;display:block!important}
+  .a4-wrap{padding:0;overflow:visible}
+  .a4-doc{box-shadow:none;border-radius:0;min-width:auto;max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="spin"></div><div class="ld-txt" id="ld-txt">Sila tunggu...</div></div>
+<div id="toast" role="alert" aria-live="polite"></div>
+
+<!-- PIN SCREEN — full page, keyboard-first -->
+<div id="vpin">
+  <div class="pin-card" id="pin-card">
+    <div class="pin-brand">
+      <div class="pin-brand-ico">eK</div>
+      <div class="pin-brand-txt">
+        <div class="pin-brand-nm">Admin Panel</div>
+        <div class="pin-brand-sub" id="pin-brand-sub">eKoCBA4082</div>
+      </div>
+    </div>
+    <div class="pin-lbl">Masukkan PIN</div>
+    <div class="pin-input-wrap">
+      <input type="password" inputmode="numeric" maxlength="4"
+             id="pin-field" autocomplete="off" placeholder="••••"
+             aria-label="PIN 4 digit" autofocus>
+      <span class="pin-eye" id="pin-eye" onclick="togglePinEye()" role="button" tabindex="0" aria-label="Tunjuk atau sembunyi PIN">
+        <i class="ti ti-eye" id="pin-eye-icon"></i>
+      </span>
+    </div>
+    <div class="pin-err" id="pin-err"></div>
+    <button class="pin-submit" id="pin-btn" onclick="submitPin()">
+      <i class="ti ti-login"></i> Log Masuk
+    </button>
+    <div class="pin-hint-row">
+      <i class="ti ti-keyboard"></i>
+      Taip PIN dan tekan <strong style="color:#7C3AED;margin:0 3px">Enter</strong>
+    </div>
+  </div>
+  <div class="pin-scl" id="pin-scl"></div>
+</div>
+<!-- NAV -->
+<div id="nav-bd" onclick="closeNav()"></div>
+<nav id="snav" aria-label="Menu navigasi admin">
+  <div class="snav-hd">
+    <div class="snav-app">eKoCBA4082</div>
+    <div class="snav-scl" id="snav-school">—</div>
+    <div class="snav-yr"><span class="ldot"></span><span id="snav-yr">—</span></div>
+  </div>
+  <div class="snav-body">
+    <div class="ni act" id="ni-dash" onclick="go('dash')"><i class="ti ti-home"></i> Dashboard</div>
+    <div class="ni" id="ni-unit" onclick="go('unit')"><i class="ti ti-folder"></i> Urus Unit</div>
+    <div class="ni" id="ni-data" onclick="go('data')"><i class="ti ti-users"></i> Data Murid & Guru</div>
+    <div class="ni" id="ni-lap"  onclick="go('lap')"><i class="ti ti-report"></i> Laporan Semua Unit</div>
+    <div class="ni-divider"></div>
+    <div class="ni" id="ni-tahun" onclick="go('tahun')"><i class="ti ti-calendar-plus"></i> Buka Tahun Baru</div>
+    <div class="ni" id="ni-set"   onclick="go('set')"><i class="ti ti-settings"></i> Tetapan</div>
+  </div>
+  <div class="snav-ft"><div class="n-logout" onclick="doLogout()"><i class="ti ti-logout"></i> Log Keluar</div></div>
+</nav>
+
+<!-- CONFIRM MODAL -->
+<div id="ov-conf" class="ov" role="dialog" aria-modal="true">
+  <div class="ms">
+    <div class="ms-handle"></div>
+    <div class="ms-ttl" id="conf-ttl">Sahkan Tindakan</div>
+    <div style="font-size:var(--fs-sm);color:var(--t2);margin-bottom:20px;line-height:1.65" id="conf-msg"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button class="btn btn-o" onclick="closeModal('ov-conf')">Batal</button>
+      <button class="btn btn-d" id="conf-ok">Teruskan</button>
+    </div>
+  </div>
+</div>
+
+<!-- TANDATANGAN MODAL -->
+<div id="ov-sign" class="ov" role="dialog" aria-modal="true">
+  <div class="ms">
+    <div class="ms-handle"></div>
+    <div class="ms-ttl" id="sign-modal-ttl">Tandatangan</div>
+    <div class="fg">
+      <label class="fl" for="sign-nama-input">Nama</label>
+      <input type="text" class="fc" id="sign-nama-input" placeholder="Nama penandatangan...">
+    </div>
+    <div class="sign-toolbar">
+      <span style="font-size:var(--fs-xs);color:var(--t2);font-weight:600">Warna:</span>
+      <div class="sign-color act" style="background:#1a1a1a" onclick="setSignColor('#1a1a1a',this)" title="Hitam"></div>
+      <div class="sign-color" style="background:#1B3A6B" onclick="setSignColor('#1B3A6B',this)" title="Biru gelap"></div>
+      <div class="sign-color" style="background:#1a5c4f" onclick="setSignColor('#1a5c4f',this)" title="Hijau gelap"></div>
+      <span style="margin-left:auto;font-size:var(--fs-xs);color:var(--t2);font-weight:600">Saiz:</span>
+      <input type="range" class="sign-sz" id="sign-sz" min="1" max="6" value="2" oninput="setSignSize(this.value)">
+      <span id="sign-sz-val" style="font-size:var(--fs-xs);color:var(--t2);width:16px">2</span>
+    </div>
+    <div class="sign-canvas-wrap">
+      <canvas id="sign-canvas"></canvas>
+      <div class="sign-empty-hint" id="sign-hint">Lukis tandatangan di sini...</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <button class="btn btn-o btn-sm" onclick="clearSignCanvas()"><i class="ti ti-eraser"></i> Padam</button>
+      <button class="btn btn-o" onclick="closeModal('ov-sign')">Batal</button>
+      <button class="btn btn-p" onclick="saveSign()"><i class="ti ti-check"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- UNIT MODAL -->
+<div id="ov-unit" class="ov" role="dialog" aria-modal="true">
+  <div class="ms">
+    <div class="ms-handle"></div>
+    <div class="ms-ttl" id="um-ttl">Tambah Unit</div>
+    <input type="hidden" id="um-id">
+    <div style="text-align:center;margin-bottom:16px">
+      <div class="lp" id="um-logo-box" onclick="document.getElementById('um-logo-file').click()" role="button"><i class="ti ti-photo-plus"></i></div>
+      <input type="file" id="um-logo-file" accept="image/*" style="display:none" onchange="previewLogo(this)">
+      <div style="font-size:var(--fs-xs);color:var(--t3)">Ketuk untuk upload logo unit</div>
+    </div>
+    <div class="fg">
+      <label class="fl" for="um-nama">Nama Unit <span style="color:var(--r)">*</span></label>
+      <input type="text" class="fc" id="um-nama" placeholder="cth: Kadet Polis" autocomplete="off">
+      <div class="field-err" id="um-nama-err"></div>
+    </div>
+    <div class="fg">
+      <label class="fl" for="um-kat">Kategori <span style="color:var(--r)">*</span></label>
+      <select class="fc fc-sel" id="um-kat">
+        <option value="">-- Pilih Kategori --</option>
+        <option value="Unit Uniform">Unit Uniform</option>
+        <option value="Kelab & Persatuan">Kelab & Persatuan</option>
+        <option value="Sukan & Permainan">Sukan & Permainan</option>
+        <option value="Kebitaraan Kelab">Kebitaraan Kelab</option>
+        <option value="Kebitaraan Sukan">Kebitaraan Sukan</option>
+      </select>
+      <div class="field-err" id="um-kat-err"></div>
+    </div>
+    <div class="fg">
+      <label class="fl" for="um-status">Status</label>
+      <select class="fc fc-sel" id="um-status">
+        <option value="Aktif">Aktif</option>
+        <option value="Tidak Aktif">Tidak Aktif</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+      <button class="btn btn-o" onclick="closeModal('ov-unit')">Batal</button>
+      <button class="btn btn-p" onclick="doSaveUnit()"><i class="ti ti-check"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- GURU MODAL -->
+<div id="ov-guru" class="ov" role="dialog" aria-modal="true">
+  <div class="ms">
+    <div class="ms-handle"></div>
+    <div class="ms-ttl">Tambah Guru ke Unit</div>
+    <div class="fg">
+      <label class="fl" for="ag-sel">Pilih Guru <span style="color:var(--r)">*</span></label>
+      <select class="fc fc-sel" id="ag-sel"><option value="">-- Pilih Guru --</option></select>
+      <div class="field-err" id="ag-sel-err"></div>
+    </div>
+    <div class="fg">
+      <label class="fl" for="ag-jwt">Jawatan</label>
+      <select class="fc fc-sel" id="ag-jwt">
+        <option value="Penasihat">Penasihat</option>
+        <option value="Pembantu">Pembantu</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+      <button class="btn btn-o" onclick="closeModal('ov-guru')">Batal</button>
+      <button class="btn btn-p" onclick="doAssignGuru()"><i class="ti ti-check"></i> Assign</button>
+    </div>
+  </div>
+</div>
+
+<!-- MURID UNIT MODAL -->
+<div id="ov-mu" class="ov" role="dialog" aria-modal="true">
+  <div class="ms">
+    <div class="ms-handle"></div>
+    <div class="ms-ttl">Daftar Murid ke Unit</div>
+    <div class="fc-row" id="mu-darjah" style="margin-bottom:10px"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="font-size:var(--fs-xs);color:var(--t2);font-weight:500"><span id="mu-count">0</span> dipilih</div>
+      <button class="btn btn-o btn-sm" onclick="toggleSelectAll()"><i class="ti ti-select-all"></i> Pilih Semua</button>
+    </div>
+    <div id="mu-list" style="border:1px solid var(--bdr);border-radius:var(--r-md);overflow:hidden;margin-bottom:14px;max-height:42dvh;overflow-y:auto"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button class="btn btn-o" onclick="closeModal('ov-mu')">Batal</button>
+      <button class="btn btn-p" onclick="doAddMuridBulk()"><i class="ti ti-check"></i> Daftar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ VIEWS ══════════════ -->
+
+<!-- LAUNCHER -->
+<div id="vl" class="view act">
+  <div class="l-top">
+    <div class="l-brand">
+      <div class="l-logo">eK</div>
+      <div class="l-texts">
+        <div class="l-nm" id="l-app">eKoCBA4082</div>
+        <div class="l-scl" id="l-school">—</div>
+      </div>
+    </div>
+    <div class="yr-chip"><span class="ldot"></span><span id="l-yr">—</span></div>
+  </div>
+  <div class="l-body" id="launcher-body">
+    <div style="padding:20px 0">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px">
+        <div class="ucard c-uni" style="opacity:.5"><div class="u-ico" style="margin:0 auto 8px"><div class="skel" style="width:44px;height:44px;border-radius:10px"></div></div><div class="skel" style="height:11px;border-radius:4px;margin-bottom:4px"></div><div class="skel" style="height:10px;width:60%;margin:0 auto;border-radius:4px"></div></div>
+        <div class="ucard c-kla" style="opacity:.4"><div class="u-ico" style="margin:0 auto 8px"><div class="skel" style="width:44px;height:44px;border-radius:10px"></div></div><div class="skel" style="height:11px;border-radius:4px;margin-bottom:4px"></div><div class="skel" style="height:10px;width:60%;margin:0 auto;border-radius:4px"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="vd" class="view">
+  <div class="tb">
+    <div class="tb-icon" onclick="openNav()"><i class="ti ti-menu-2"></i></div>
+    <div class="tb-title"><div class="tb-ttl" id="d-school">Dashboard</div><div class="tb-sub" id="d-year">—</div></div>
+  </div>
+  <div class="pc-max">
+    <div class="dash-stats">
+      <div class="ds-card"><div class="ds-n n-bl" id="ds-unit">—</div><div class="ds-l">Unit Aktif</div></div>
+      <div class="ds-card"><div class="ds-n n-nv" id="ds-murid">—</div><div class="ds-l">Murid</div></div>
+      <div class="ds-card"><div class="ds-n n-am" id="ds-lf">—</div><div class="ds-l">Low Functioning</div></div>
+      <div class="ds-card"><div class="ds-n n-gr" id="ds-selesai">—</div><div class="ds-l">Laporan Selesai</div></div>
+    </div>
+    <div class="prg-wrap">
+      <div class="prg-lbl"><span>Kemajuan Laporan</span><span id="dp-txt">0 / 0</span></div>
+      <div class="prg-bar"><div class="prg-fill" id="dp-fill" style="width:0%"></div></div>
+    </div>
+    <div class="sec-ttl">Akses Pantas</div>
+    <div class="qac-grid">
+      <div class="qac" onclick="go('unit')"><i class="ti ti-folder"></i><div class="qac-nm">Urus Unit</div></div>
+      <div class="qac" onclick="go('data')"><i class="ti ti-users"></i><div class="qac-nm">Data Murid & Guru</div></div>
+      <div class="qac" onclick="go('lap')"><i class="ti ti-report"></i><div class="qac-nm">Semak Laporan</div></div>
+      <div class="qac" onclick="go('set')"><i class="ti ti-settings"></i><div class="qac-nm">Tetapan</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- UNIT LIST -->
+<div id="vu" class="view">
+  <div class="tb">
+    <div class="tb-icon" onclick="openNav()"><i class="ti ti-menu-2"></i></div>
+    <div class="tb-title"><div class="tb-ttl">Urus Unit</div></div>
+    <button class="btn btn-p btn-sm" onclick="openAddUnit()"><i class="ti ti-plus"></i> Tambah</button>
+  </div>
+  <div class="pc-max">
+    <div class="fc-row" id="unit-filter"></div>
+    <div id="unit-list"></div>
+  </div>
+</div>
+
+<!-- UNIT DETAIL -->
+<div id="vud" class="view">
+  <div class="tb">
+    <div class="tb-icon" onclick="go('unit')"><i class="ti ti-arrow-left"></i></div>
+    <div class="tb-title"><div class="tb-ttl" id="ud-nm">—</div><div class="tb-sub" id="ud-kat">—</div></div>
+    <div class="tb-icon" onclick="openEditUnit()" title="Edit"><i class="ti ti-edit" style="color:var(--acc)"></i></div>
+  </div>
+  <div class="pc-max">
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn btn-o" id="tab-guru" onclick="switchUnitTab('guru')" style="flex:1">Guru</button>
+      <button class="btn btn-o" id="tab-murid" onclick="switchUnitTab('murid')" style="flex:1">Murid</button>
+    </div>
+    <div id="tc-guru">
+      <button class="btn btn-p btn-bl" onclick="openAssignGuru()" style="margin-bottom:12px"><i class="ti ti-user-plus"></i> Tambah Guru</button>
+      <div id="guru-unit-list"></div>
+    </div>
+    <div id="tc-murid" style="display:none">
+      <div class="fc-row" id="ud-murid-darjah"></div>
+      <button class="btn btn-p btn-bl" onclick="openAddMuridToUnit()" style="margin-bottom:12px"><i class="ti ti-user-plus"></i> Daftar Murid</button>
+      <div id="murid-unit-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DATA MURID & GURU -->
+<div id="vdata" class="view">
+  <div class="tb">
+    <div class="tb-icon" onclick="openNav()"><i class="ti ti-menu-2"></i></div>
+    <div class="tb-title"><div class="tb-ttl">Data Murid & Guru</div><div class="tb-sub" id="data-sub">—</div></div>
+    <div class="tb-icon" id="data-lf-save" onclick="saveLFBatch()" aria-label="Simpan LF" style="display:none"><i class="ti ti-device-floppy" style="color:var(--acc)"></i></div>
+  </div>
+
+  <!-- Tab -->
+  <div style="display:flex;border-bottom:2px solid var(--bdr);background:#fff;position:sticky;top:62px;z-index:50">
+    <button id="dt-tab-murid" onclick="switchDataTab('murid')" style="flex:1;padding:12px;border:none;border-bottom:2px solid var(--acc);background:none;font-size:var(--fs-sm);font-weight:700;color:var(--pl);cursor:pointer;transition:all .15s;margin-bottom:-2px">Murid</button>
+    <button id="dt-tab-guru"  onclick="switchDataTab('guru')"  style="flex:1;padding:12px;border:none;border-bottom:2px solid transparent;background:none;font-size:var(--fs-sm);font-weight:600;color:var(--t3);cursor:pointer;transition:all .15s;margin-bottom:-2px">Guru</button>
+  </div>
+
+  <!-- Panel Murid -->
+  <div id="dt-murid">
+    <div class="pc-max" style="padding-bottom:8px">
+      <!-- Action row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;margin-top:2px">
+        <button class="btn btn-p btn-sm" onclick="openModal('ov-add-murid')"><i class="ti ti-user-plus"></i> Murid</button>
+        <button class="btn btn-o btn-sm" onclick="downloadTemplate('murid')"><i class="ti ti-download"></i> Template</button>
+        <button class="btn btn-o btn-sm" onclick="openModal('ov-import-murid')"><i class="ti ti-file-import"></i> Import</button>
+      </div>
+      <div class="info-alert ia-amber" style="margin-bottom:10px"><i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i><div>Togol <strong>LF</strong> untuk murid Low Functioning — dikira hadir automatik. Simpan selepas ubah.</div></div>
+      <div class="fc-row" id="data-murid-darjah"></div>
+    </div>
+    <div id="data-murid-list"></div>
+    <div class="pc-max"><button class="btn btn-p btn-bl" onclick="saveLFBatch()" style="margin-top:4px"><i class="ti ti-device-floppy"></i> Simpan Perubahan LF</button></div>
+    <div class="safe-bottom"></div>
+  </div>
+
+  <!-- Panel Guru -->
+  <div id="dt-guru" style="display:none">
+    <div class="pc-max">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;margin-top:2px">
+        <button class="btn btn-p btn-sm" onclick="openModal('ov-add-guru')"><i class="ti ti-user-plus"></i> Guru</button>
+        <button class="btn btn-o btn-sm" onclick="downloadTemplate('guru')"><i class="ti ti-download"></i> Template</button>
+        <button class="btn btn-o btn-sm" onclick="openModal('ov-import-guru')"><i class="ti ti-file-import"></i> Import</button>
+      </div>
+      <div id="data-guru-list"></div>
+    </div>
+    <div class="safe-bottom"></div>
+  </div>
+</div>
+
+<!-- MODAL: Tambah Murid Manual -->
+<div id="ov-add-murid" class="ov" role="dialog" aria-modal="true">
+  <div class="ms">
+    <div class="ms-handle"></div>
+    <div class="ms-ttl"><i class="ti ti-user-plus" style="color:var(--pl)"></i> Tambah Murid</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="fg" style="grid-column:1/-1"><label class="fl">IC / MyKid <span style="color:var(--r)">*</span></label><input type="text" inputmode="numeric" class="fc" id="am-ic" placeholder="cth: 010203040001" maxlength="12" autocomplete="off"><div class="field-err" id="am-ic-err"></div></div>
+      <div class="fg" style="grid-column:1/-1"><label class="fl">Nama Penuh <span style="color:var(--r)">*</span></label><input type="text" class="fc" id="am-nama" placeholder="cth: Ahmad bin Ali" autocomplete="off"><div class="field-err" id="am-nama-err"></div></div>
+      <div class="fg"><label class="fl">Kelas</label><input type="text" class="fc" id="am-kelas" placeholder="cth: 4 Bestari" autocomplete="off"></div>
+      <div class="fg"><label class="fl">Darjah <span style="color:var(--r)">*</span></label><select class="fc fc-sel" id="am-darjah"><option value="">-- Pilih --</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select><div class="field-err" id="am-darjah-err"></div></div>
+      <div class="fg"><label class="fl">Jantina</label><select class="fc fc-sel" id="am-jantina"><option value="">-- Pilih --</option><option value="L">Lelaki</option><option value="P">Perempuan</option></select></div>
+      <div class="fg"><label class="fl">No. OKU</label><input type="text" class="fc" id="am-oku" placeholder="cth: OKU001" autocomplete="off"></div>
+      <div class="fg" style="grid-column:1/-1"><label class="fl">Kategori</label><select class="fc fc-sel" id="am-kat"><option value="Masalah Pembelajaran">Masalah Pembelajaran</option><option value="Pendengaran">Pendengaran</option></select></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+      <button class="btn btn-o" onclick="closeModal('ov-add-murid')">Batal</button>
+      <button class="btn btn-p" onclick="doAddMuridSingle()"><i class="ti ti-check"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Tambah Guru Manual -->
+<div id="ov-add-guru" class="ov" role="dialog" aria-modal="true">
+  <div class="ms">
+    <div class="ms-handle"></div>
+    <div class="ms-ttl"><i class="ti ti-user-plus" style="color:var(--pl)"></i> Tambah Guru</div>
+    <div class="fg"><label class="fl">Nama Penuh <span style="color:var(--r)">*</span></label><input type="text" class="fc" id="ag2-nama" placeholder="cth: Cikgu Ahmad bin Ali" autocomplete="off"><div class="field-err" id="ag2-nama-err"></div></div>
+    <div class="fg"><label class="fl">Kategori</label><select class="fc fc-sel" id="ag2-kat"><option value="Masalah Pembelajaran">Masalah Pembelajaran</option><option value="Pendengaran">Pendengaran</option></select></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+      <button class="btn btn-o" onclick="closeModal('ov-add-guru')">Batal</button>
+      <button class="btn btn-p" onclick="doAddGuruSingle()"><i class="ti ti-check"></i> Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Import CSV Murid -->
+<div id="ov-import-murid" class="ov" role="dialog" aria-modal="true">
+  <div class="ms">
+    <div class="ms-handle"></div>
+    <div class="ms-ttl"><i class="ti ti-file-import" style="color:var(--pl)"></i> Import CSV Murid</div>
+    <div class="info-alert ia-amber" style="margin-bottom:12px"><i class="ti ti-alert-triangle" style="flex-shrink:0"></i><div><strong>Amaran:</strong> Import CSV akan <strong>GANTI SEMUA</strong> data murid sedia ada. Guna "Tambah Murid" untuk tambah satu-satu tanpa padam.</div></div>
+    <div class="info-alert ia-blue" style="margin-bottom:12px"><i class="ti ti-info-circle" style="flex-shrink:0"></i><div>Kolum diperlukan: <strong>IC, Nama, Kelas, Darjah, Jantina, NoOKU, Kategori</strong><br>Kategori: <em>Masalah Pembelajaran</em> atau <em>Pendengaran</em></div></div>
+    <input type="file" id="file-m" accept=".csv,.CSV" style="display:none" onchange="handleCSV('murid',this)">
+    <div class="uz" onclick="document.getElementById('file-m').click()" role="button"><i class="ti ti-file-spreadsheet"></i><div class="uz-ttl">Pilih fail CSV murid</div><div class="uz-sub">Klik untuk pilih fail .csv</div></div>
+    <div id="csv-m-preview" style="display:none;margin-top:12px">
+      <div class="card"><div class="card-hd"><div class="card-ttl" id="csv-m-ttl">Preview</div><span class="bdg bdg-ok" id="csv-m-bdg"></span></div><div class="tw"><table class="tbl" id="csv-m-tbl"></table></div></div>
+      <button class="btn btn-p btn-bl" onclick="doUploadMurid()"><i class="ti ti-database-import"></i> Ganti & Simpan ke Sistem</button>
+    </div>
+    <button class="btn btn-o btn-bl" onclick="closeModal('ov-import-murid');document.getElementById('csv-m-preview').style.display='none';S.csvMurid=null;" style="margin-top:8px">Tutup</button>
+  </div>
+</div>
+
+<!-- MODAL: Import CSV Guru -->
+<div id="ov-import-guru" class="ov" role="dialog" aria-modal="true">
+  <div class="ms">
+    <div class="ms-handle"></div>
+    <div class="ms-ttl"><i class="ti ti-file-import" style="color:var(--pl)"></i> Import CSV Guru</div>
+    <div class="info-alert ia-amber" style="margin-bottom:12px"><i class="ti ti-alert-triangle" style="flex-shrink:0"></i><div><strong>Amaran:</strong> Import CSV akan <strong>GANTI SEMUA</strong> data guru sedia ada. Guna "Tambah Guru" untuk tambah satu-satu tanpa padam.</div></div>
+    <div class="info-alert ia-blue" style="margin-bottom:12px"><i class="ti ti-info-circle" style="flex-shrink:0"></i><div>Kolum diperlukan: <strong>Nama, Kategori</strong><br>ID guru dijana automatik oleh sistem</div></div>
+    <input type="file" id="file-g" accept=".csv,.CSV" style="display:none" onchange="handleCSV('guru',this)">
+    <div class="uz" onclick="document.getElementById('file-g').click()" role="button"><i class="ti ti-file-spreadsheet"></i><div class="uz-ttl">Pilih fail CSV guru</div><div class="uz-sub">Klik untuk pilih fail .csv</div></div>
+    <div id="csv-g-preview" style="display:none;margin-top:12px">
+      <div class="card"><div class="card-hd"><div class="card-ttl" id="csv-g-ttl">Preview</div><span class="bdg bdg-ok" id="csv-g-bdg"></span></div><div class="tw"><table class="tbl" id="csv-g-tbl"></table></div></div>
+      <button class="btn btn-p btn-bl" onclick="doUploadGuru()"><i class="ti ti-database-import"></i> Ganti & Simpan ke Sistem</button>
+    </div>
+    <button class="btn btn-o btn-bl" onclick="closeModal('ov-import-guru');document.getElementById('csv-g-preview').style.display='none';S.csvGuru=null;" style="margin-top:8px">Tutup</button>
+  </div>
+</div>
+
+<!-- LAPORAN SEMUA UNIT -->
+<div id="vlap" class="view">
+  <div class="tb">
+    <div class="tb-icon" onclick="openNav()"><i class="ti ti-menu-2"></i></div>
+    <div class="tb-title"><div class="tb-ttl">Laporan Semua Unit</div></div>
+    <div class="tb-icon" onclick="loadAllLaporan()"><i class="ti ti-refresh"></i></div>
+  </div>
+  <div class="pc-max">
+    <div class="fc-row" id="lap-filter">
+      <div class="fchip act" onclick="filterLap('Semua',this)">Semua</div>
+      <div class="fchip" onclick="filterLap('Selesai',this)">Selesai</div>
+      <div class="fchip" onclick="filterLap('Draf',this)">Draf</div>
+    </div>
+    <div id="lap-all-list"></div>
+  </div>
+</div>
+
+<!-- LAPORAN DETAIL (ADMIN) -->
+<div id="vlap-detail" class="view">
+  <div class="tb">
+    <div class="tb-icon" onclick="go('lap')"><i class="ti ti-arrow-left"></i></div>
+    <div class="tb-title"><div class="tb-ttl" id="lad-ttl">Laporan</div><div class="tb-sub" id="lad-sub">—</div></div>
+    <div class="tb-icon no-print" onclick="showA4Admin()" title="Preview A4"><i class="ti ti-eye" style="color:var(--acc)"></i></div>
+  </div>
+  <div class="pc-max">
+
+    <!-- Info ringkas -->
+    <div class="form-section">
+      <div class="form-sec-hd"><i class="ti ti-info-circle"></i> Maklumat Perjumpaan</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:var(--fs-sm)">
+        <div><span style="color:var(--t3);font-size:var(--fs-xs)">Bil. Perjumpaan</span><div id="lad-no" style="font-weight:600">—</div></div>
+        <div><span style="color:var(--t3);font-size:var(--fs-xs)">Tarikh</span><div id="lad-tarikh" style="font-weight:600">—</div></div>
+        <div><span style="color:var(--t3);font-size:var(--fs-xs)">Masa</span><div id="lad-masa" style="font-weight:600">—</div></div>
+        <div><span style="color:var(--t3);font-size:var(--fs-xs)">Tempat</span><div id="lad-tempat" style="font-weight:600">—</div></div>
+        <div><span style="color:var(--t3);font-size:var(--fs-xs)">Guru Penasihat</span><div id="lad-penasihat" style="font-weight:600">—</div></div>
+        <div><span style="color:var(--t3);font-size:var(--fs-xs)">Ahli Hadir</span><div id="lad-hadir" style="font-weight:600">—</div></div>
+      </div>
+    </div>
+
+    <!-- Catatan Pemantauan — editable -->
+    <div class="form-section">
+      <div class="form-sec-hd"><i class="ti ti-notes"></i> Catatan Pemantauan GPK Kokurikulum</div>
+      <div class="fg" style="margin-bottom:0">
+        <textarea class="fc" id="lad-catatan" placeholder="Isi catatan pemantauan di sini..." style="min-height:88px"></textarea>
+      </div>
+    </div>
+
+    <!-- Tandatangan -->
+    <div class="form-section">
+      <div class="form-sec-hd"><i class="ti ti-writing"></i> Tandatangan</div>
+      <div class="info-alert ia-blue" style="margin-bottom:12px">
+        <i class="ti ti-info-circle" style="flex-shrink:0"></i>
+        <div>Tandatangan yang sudah disimpan <strong>kekal</strong> walaupun laporan diedit. Padam dahulu untuk tandatangan semula.</div>
+      </div>
+      <div class="sign-grid-2">
+        <div>
+          <div style="font-size:var(--fs-xs);font-weight:600;color:var(--t2);margin-bottom:6px">Tandatangan Setiausaha</div>
+          <div class="sign-box" id="sign-box-setiausaha" onclick="openSignModal('setiausaha')">
+            <div class="sign-box-clear" onclick="clearSign('setiausaha',event)"><i class="ti ti-x" style="font-size:10px"></i></div>
+            <img id="sign-img-setiausaha" src="" alt="" style="display:none">
+            <i class="ti ti-writing" id="sign-ico-setiausaha" style="font-size:22px;color:var(--t3)"></i>
+            <span class="sign-box-lbl" id="sign-lbl-setiausaha">Ketuk untuk tandatangan</span>
+            <div class="sign-box-name" id="sign-nm-setiausaha"></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:var(--fs-xs);font-weight:600;color:var(--t2);margin-bottom:6px">Tandatangan Guru Penasihat</div>
+          <div class="sign-box" id="sign-box-guru" onclick="openSignModal('guru')">
+            <div class="sign-box-clear" onclick="clearSign('guru',event)"><i class="ti ti-x" style="font-size:10px"></i></div>
+            <img id="sign-img-guru" src="" alt="" style="display:none">
+            <i class="ti ti-writing" id="sign-ico-guru" style="font-size:22px;color:var(--t3)"></i>
+            <span class="sign-box-lbl" id="sign-lbl-guru">Ketuk untuk tandatangan</span>
+            <div class="sign-box-name" id="sign-nm-guru"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sign-gpk-row">
+        <div style="font-size:var(--fs-xs);font-weight:600;color:var(--t2);margin-bottom:6px">Tandatangan GPK Kokurikulum</div>
+        <div class="sign-box" id="sign-box-gpk" onclick="openSignModal('gpk')" style="max-width:280px">
+          <div class="sign-box-clear" onclick="clearSign('gpk',event)"><i class="ti ti-x" style="font-size:10px"></i></div>
+          <img id="sign-img-gpk" src="" alt="" style="display:none">
+          <i class="ti ti-writing" id="sign-ico-gpk" style="font-size:22px;color:var(--t3)"></i>
+          <span class="sign-box-lbl" id="sign-lbl-gpk">Ketuk untuk tandatangan</span>
+          <div class="sign-box-name" id="sign-nm-gpk"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+      <button class="btn btn-o" onclick="showA4Admin()"><i class="ti ti-eye"></i> Preview A4</button>
+      <button class="btn btn-p" onclick="saveLapAdmin()"><i class="ti ti-device-floppy"></i> Simpan Catatan</button>
+    </div>
+  </div>
+  <div class="safe-bottom"></div>
+</div>
+
+<!-- A4 PREVIEW (Admin) -->
+<div id="va4" class="view">
+  <div class="a4-tb no-print">
+    <div class="tb-icon" onclick="go('lap-detail')"><i class="ti ti-arrow-left"></i></div>
+    <div class="tb-title"><div class="tb-ttl">Preview Laporan A4</div></div>
+    <button class="btn btn-p btn-sm no-print" onclick="window.print()"><i class="ti ti-printer"></i> Cetak / PDF</button>
+  </div>
+  <div class="a4-wrap"><div class="a4-doc" id="a4-doc"></div></div>
+</div>
+
+<!-- TAHUN BARU -->
+<div id="vtb" class="view">
+  <div class="tb">
+    <div class="tb-icon" onclick="openNav()"><i class="ti ti-menu-2"></i></div>
+    <div class="tb-title"><div class="tb-ttl">Buka Tahun Baru</div></div>
+  </div>
+  <div class="pc-max">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div class="card" style="margin-bottom:0"><div class="card-bd" style="text-align:center"><div style="font-size:var(--fs-xs);color:var(--t3);margin-bottom:4px">Tahun Aktif</div><div style="font-size:32px;font-weight:700;color:var(--p)" id="tb-curr">—</div></div></div>
+      <div class="card" style="margin-bottom:0;border-color:#BBF7D0"><div class="card-bd" style="text-align:center"><div style="font-size:var(--fs-xs);color:var(--t3);margin-bottom:4px">Tahun Baru</div><div style="font-size:32px;font-weight:700;color:var(--g)" id="tb-new">—</div></div></div>
+    </div>
+    <div class="info-alert ia-blue" style="margin-bottom:16px"><i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i><div>Yang akan dijana:<br>✓ Spreadsheet <strong>eKoCBA4082_<span id="tb-new2">—</span></strong><br>✓ Folder Laporan_Gambar/<span id="tb-new3">—</span><br>✓ Semua sheet dengan header baru (29 kolum Laporan)<br>✓ Data lama kekal untuk rujukan</div></div>
+    <button class="btn btn-p btn-bl" onclick="confirmBukaTahun()"><i class="ti ti-calendar-plus"></i> Buka Tahun <span id="tb-new4">—</span></button>
+  </div>
+</div>
+
+<!-- TETAPAN -->
+<div id="vs" class="view">
+  <div class="tb">
+    <div class="tb-icon" onclick="openNav()"><i class="ti ti-menu-2"></i></div>
+    <div class="tb-title"><div class="tb-ttl">Tetapan</div></div>
+  </div>
+  <div class="pc-max">
+    <div class="sec-ttl">Tukar PIN Admin</div>
+    <div class="card"><div class="card-bd">
+      <div class="fg"><label class="fl" for="sp-old">PIN Semasa</label><input type="password" inputmode="numeric" maxlength="4" class="fc" id="sp-old" placeholder="••••"><div class="field-err" id="sp-old-err"></div></div>
+      <div class="fg"><label class="fl" for="sp-new">PIN Baru</label><input type="password" inputmode="numeric" maxlength="4" class="fc" id="sp-new" placeholder="••••"><div class="field-err" id="sp-new-err"></div></div>
+      <div class="fg"><label class="fl" for="sp-cnf">Ulang PIN Baru</label><input type="password" inputmode="numeric" maxlength="4" class="fc" id="sp-cnf" placeholder="••••"><div class="field-err" id="sp-cnf-err"></div></div>
+      <button class="btn btn-p btn-bl" onclick="doChangePin()"><i class="ti ti-lock"></i> Tukar PIN</button>
+    </div></div>
+    <div class="sec-ttl" style="margin-top:4px">Maklumat Sekolah</div>
+    <div class="card"><div class="card-bd">
+      <div class="fg"><label class="fl" for="sp-scl">Nama Sekolah</label><input type="text" class="fc" id="sp-scl" placeholder="Nama penuh sekolah"></div>
+      <button class="btn btn-p btn-bl" onclick="doUpdateSchool()"><i class="ti ti-check"></i> Simpan</button>
+    </div></div>
+    <div class="sec-ttl" style="margin-top:4px">URL Sistem Guru</div>
+    <div class="card"><div class="card-bd">
+      <div class="fg"><label class="fl" for="sp-url">URL KO_Guru Web App</label><input type="url" class="fc" id="sp-url" placeholder="https://script.google.com/macros/..."><div class="fh" style="font-size:var(--fs-xs);color:var(--t3);margin-top:4px">URL ini digunakan pada kad Admin dalam launcher guru</div></div>
+      <button class="btn btn-p btn-bl" onclick="doUpdateGuruUrl()"><i class="ti ti-link"></i> Simpan URL</button>
+    </div></div>
+    <div class="sec-ttl" style="margin-top:4px">Maklumat Sistem</div>
+    <div class="card"><div class="card-bd" id="sys-info" style="font-size:var(--fs-sm);color:var(--t2);display:flex;flex-direction:column;gap:8px">—</div></div>
+  </div>
+  <div class="safe-bottom"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// KONFIGURASI — TUKAR URL DEPLOYMENT GAS DI SINI
+// ═══════════════════════════════════════════════
+// Dapatkan URL selepas deploy GAS dengan setting:
+//   Execute as  : Me
+//   Who has access: Anyone
+var GAS_URL = 'TUKAR_KEPADA_URL_DEPLOYMENT_GAS_ANDA';
+
+/**
+ * callGAS — ganti google.script.run untuk akses dari luar domain GAS.
+ * Berfungsi dari GitHub Pages, Netlify, atau mana-mana hosting.
+ *
+ * @param {string}   action    - nama action (function) dalam Code.gs doPost()
+ * @param {object}   params    - parameter sebagai object
+ * @param {function} onSuccess - dipanggil dengan response { success, data, message }
+ * @param {function} onFailure - dipanggil dengan Error object jika fetch gagal
+ */
+function callGAS(action, params, onSuccess, onFailure) {
+  fetch(GAS_URL, {
+    method: 'POST',
+    // Content-Type: text/plain — PENTING untuk elak CORS preflight OPTIONS request
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: action, params: params || {} })
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + res.statusText);
+    return res.json();
+  })
+  .then(function(r) {
+    if (typeof onSuccess === 'function') onSuccess(r);
+  })
+  .catch(function(err) {
+    console.error('[callGAS] ' + action + ' gagal:', err);
+    if (typeof onFailure === 'function') onFailure(err);
+  });
+}
+
+var S = {
+  loggedIn: false, view: 'launcher',
+  settings: {}, units: [], allUnits: [],
+  gurus: [], muridList: [], muridLFChanges: {},
+  selectedUnit: null, unitTab: 'guru',
+  dataTab: 'murid', dataGuruList: [],
+  csvTab: 'murid', csvMurid: null, csvGuru: null,
+  muridForUnit: [], logoB64: null, logoMime: null, logoName: null,
+  allLaporan: [], lapFilter: 'Semua',
+  currentLapId: null, currentPrjData: null, currentLapData: null, currentPenasihat: '',
+  sign: { setiausaha: null, guru: null, gpk: null },
+  signNama: { setiausaha: '', guru: '', gpk: '' },
+  signPending: null
+};
+
+// ═══════════════════════════════════════════════
+// INIT — tunjuk PIN screen terus, muatkan data di latar
+// ═══════════════════════════════════════════════
+window.addEventListener('load', function() {
+  initPinScreen();
+  // Muatkan data sekolah untuk papar pada PIN screen
+  callGAS('getAdminLauncherData', {}, function(r) {
+    if (!r.success) return;
+    S.settings = r.data;
+    S.allUnits = r.data.units || [];
+    var scl = r.data.schoolName || '';
+    var yr  = String(r.data.activeYear || '');
+    setTxt('pin-brand-sub', scl || 'eKoCBA4082');
+    setTxt('pin-scl', scl ? scl + ' · ' + yr : '');
+    setTxt('l-school', scl); setTxt('l-yr', yr);
+    setTxt('snav-school', scl); setTxt('snav-yr', yr);
+  }, function() {});
+});
+
+// ═══════════════════════════════════════════════
+// PIN SCREEN — keyboard-first
+// ═══════════════════════════════════════════════
+function initPinScreen() {
+  var inp = document.getElementById('pin-field');
+  if (!inp) return;
+
+  // Auto-focus selepas render
+  setTimeout(function() { inp.focus(); }, 200);
+
+  // Enter key = submit
+  inp.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); submitPin(); }
+  });
+
+  // Restrict to numeric only, max 4
+  inp.addEventListener('input', function() {
+    var v = this.value.replace(/\D/g, '').slice(0, 4);
+    this.value = v;
+    clearPinErr();
+    // Auto-submit bila 4 digit
+    if (v.length === 4) {
+      setTimeout(function() { submitPin(); }, 120);
+    }
+  });
+}
+
+function submitPin() {
+  var inp = document.getElementById('pin-field');
+  var pin = inp.value.replace(/\D/g, '');
+  if (pin.length < 4) { showPinErr('PIN mesti 4 digit'); inp.focus(); return; }
+  setPinLoading(true);
+  callGAS('checkPin', {pin: pin}, function(r) {
+    if (r.success && r.data.verified) {
+      document.getElementById('pin-btn').innerHTML = '<i class="ti ti-check"></i> Berjaya!';
+      document.getElementById('pin-btn').style.background = 'linear-gradient(135deg,#059669,#10B981)';
+      S.loggedIn = true;
+      if (S.allUnits.length > 0) {
+        setTimeout(function() { hidePinScreen(); go('dash'); loadDashboard(); }, 600);
+      } else {
+        callGAS('getAdminLauncherData', {}, function(r2) {
+          if (r2.success) { S.settings = r2.data; S.allUnits = r2.data.units || []; applySettings(r2.data); }
+          setTimeout(function() { hidePinScreen(); go('dash'); loadDashboard(); }, 600);
+        }, function() {
+          setTimeout(function() { hidePinScreen(); go('dash'); loadDashboard(); }, 600);
+        });
+      }
+    } else {
+      showPinErr(r.message || 'PIN tidak sah. Cuba lagi.');
+      shakePinCard();
+      inp.value = '';
+      setPinLoading(false);
+      setTimeout(function() { inp.focus(); }, 100);
+    }
+  }, function(e) {
+    showPinErr('Ralat sambungan: ' + e.message);
+    setPinLoading(false);
+    setTimeout(function() { inp.focus(); }, 100);
+  });
+}
+
+function showPinErr(msg) {
+  var el = document.getElementById('pin-err');
+  el.innerHTML = '<i class="ti ti-alert-circle"></i> ' + msg;
+  var inp = document.getElementById('pin-field');
+  inp.classList.add('error');
+}
+
+function clearPinErr() {
+  var el = document.getElementById('pin-err');
+  el.innerHTML = '';
+  var inp = document.getElementById('pin-field');
+  inp.classList.remove('error');
+}
+
+function setPinLoading(on) {
+  var btn = document.getElementById('pin-btn');
+  var inp = document.getElementById('pin-field');
+  if (on) {
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spin" style="width:18px;height:18px;border-width:2px;border-color:rgba(255,255,255,.3);border-top-color:#fff"></div> Mengesahkan...';
+    inp.disabled = true;
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-login"></i> Log Masuk';
+    inp.disabled = false;
+  }
+}
+
+function shakePinCard() {
+  var card = document.getElementById('pin-card');
+  card.classList.remove('shake');
+  void card.offsetWidth; // reflow
+  card.classList.add('shake');
+  setTimeout(function() { card.classList.remove('shake'); }, 500);
+}
+
+function togglePinEye() {
+  var inp = document.getElementById('pin-field');
+  var ico = document.getElementById('pin-eye-icon');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    ico.className = 'ti ti-eye-off';
+  } else {
+    inp.type = 'password';
+    ico.className = 'ti ti-eye';
+  }
+  inp.focus();
+}
+
+function hidePinScreen() {
+  var el = document.getElementById('vpin');
+  if (el) el.classList.add('hide');
+}
+
+function showPinScreen() {
+  var el = document.getElementById('vpin');
+  if (el) {
+    el.classList.remove('hide');
+    var inp = document.getElementById('pin-field');
+    if (inp) {
+      inp.value = '';
+      inp.type = 'password';
+      inp.disabled = false;
+      setTimeout(function() { inp.focus(); }, 100);
+    }
+    clearPinErr();
+    var btn = document.getElementById('pin-btn');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="ti ti-login"></i> Log Masuk'; btn.style.background = ''; }
+    var ico = document.getElementById('pin-eye-icon');
+    if (ico) ico.className = 'ti ti-eye';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// LAUNCHER DATA & RENDER
+// ═══════════════════════════════════════════════
+function applySettings(s) {
+  var scl = s.schoolName || ''; var yr = String(s.activeYear || '');
+  setTxt('pin-brand-sub', scl || 'eKoCBA4082');
+  setTxt('pin-scl', scl ? scl + ' · ' + yr : '');
+  setTxt('l-school', scl); setTxt('l-yr', yr);
+  setTxt('snav-school', scl); setTxt('snav-yr', yr);
+}
+
+function renderLauncher() {
+  var cats = [
+    {key:'Unit Uniform',pill:'pu',cls:'c-uni'},
+    {key:'Kelab & Persatuan',pill:'pk',cls:'c-kla'},
+    {key:'Sukan & Permainan',pill:'ps',cls:'c-sku'},
+    {key:'Kebitaraan Kelab',pill:'pb',cls:'c-keb'},
+    {key:'Kebitaraan Sukan',pill:'pb',cls:'c-kes'}
+  ];
+  var aktif = S.allUnits.filter(function(u) { return u.Status === 'Aktif'; });
+  var html = '';
+  cats.forEach(function(cat) {
+    var us = aktif.filter(function(u) { return u.Kategori === cat.key; });
+    if (!us.length) return;
+    html += '<div class="cat-sec"><div class="cat-hd"><span class="cpill ' + cat.pill + '">' + cat.key + '</span><div class="cline"></div><span class="cnum">' + us.length + ' unit</span></div><div class="ugrid">';
+    us.forEach(function(u) {
+      var ico = u.LogoURL ? '<img src="' + driveImg(u.LogoURL) + '" alt="" onerror="this.style.display=\'none\';">' : '<span style="font-size:28px">📋</span>';
+      html += '<div class="ucard ' + cat.cls + '" onclick="loadUnitDetail(\'' + u.UnitID + '\')" role="button" tabindex="0"><div class="u-ico">' + ico + '</div><div class="u-nm">' + esc(u.NamaUnit) + '</div><div class="u-ct">' + u.bilanganAhli + ' ahli</div></div>';
+    });
+    html += '</div></div>';
+  });
+  document.getElementById('launcher-body').innerHTML = html || '<div class="empty-state"><i class="ti ti-folder-x"></i><h3>Tiada unit aktif</h3><p>Tambah unit baharu untuk mula.</p></div>';
+}
+
+function goUnitAdmin(unitId) {
+  S.selectedUnit = S.allUnits.find(function(u) { return u.UnitID === unitId; });
+  loadUnitDetail(unitId);
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+var VIEW_MAP = { dash:'vd', unit:'vu', 'unit-detail':'vud', data:'vdata', lap:'vlap', 'lap-detail':'vlap-detail', a4:'va4', tahun:'vtb', set:'vs' };
+function go(view) {
+  if (!S.loggedIn) { showPinScreen(); return; }
+  closeNav();
+  showView(VIEW_MAP[view] || 'vd');
+  S.view = view;
+  ['dash','unit','data','lap','tahun','set'].forEach(function(k) {
+    var el = document.getElementById('ni-' + k);
+    if (el) el.classList.toggle('act', k === view || (k === 'lap' && (view === 'lap-detail' || view === 'a4')));
+  });
+  if (view === 'unit')   loadUnitList();
+  if (view === 'data')   loadDataView();
+  if (view === 'lap')    loadAllLaporan();
+  if (view === 'tahun')  loadTahunInfo();
+  if (view === 'set')    loadSettings();
+}
+function showView(id) {
+  document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('act'); });
+  var el = document.getElementById(id);
+  if (el) { el.classList.add('act'); requestAnimationFrame(function() { window.scrollTo(0, 0); }); }
+}
+function openNav() { if (!S.loggedIn) return; document.getElementById('snav').classList.add('open'); document.getElementById('nav-bd').classList.add('show'); }
+function closeNav() { document.getElementById('snav').classList.remove('open'); document.getElementById('nav-bd').classList.remove('show'); }
+function doLogout() {
+  confirm_('Log Keluar', 'Anda pasti mahu log keluar dari panel admin?', function() {
+    S.loggedIn = false; S.selectedUnit = null;
+    S.loggedIn = false; S.selectedUnit = null; closeNav(); showPinScreen(); toast('Berjaya log keluar');
+  }, 'Log Keluar', false);
+}
+
+// ═══════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════
+function loadDashboard() {
+  setTxt('d-school', S.settings.schoolName || ''); setTxt('d-year', String(S.settings.activeYear || ''));
+  showLoad('Memuatkan dashboard...');
+  callGAS('getDashboardStats', {}, function(r) {
+    hideLoad();
+    if (!r.success) { toast(r.message, 'err'); return; }
+    var d = r.data;
+    setTxt('ds-unit', d.totalUnit); setTxt('ds-murid', d.totalMurid);
+    setTxt('ds-lf', d.totalLF); setTxt('ds-selesai', d.laporanSelesai);
+    var pct = d.totalLaporan > 0 ? Math.round((d.laporanSelesai / d.totalLaporan) * 100) : 0;
+    setTxt('dp-txt', d.laporanSelesai + ' / ' + d.totalLaporan + ' selesai');
+    document.getElementById('dp-fill').style.width = pct + '%';
+  }, function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+// ═══════════════════════════════════════════════
+// UNIT LIST
+// ═══════════════════════════════════════════════
+function loadUnitList() {
+  document.getElementById('unit-list').innerHTML = skelHtml(4);
+  callGAS('getUnits', {}, function(r) {
+    if (!r.success) { toast(r.message, 'err'); return; }
+    S.units = r.data || []; S.allUnits = r.data || [];
+    buildUnitFilterChips(); renderUnitList(S.units);
+  }, function(e) { toast('Ralat: ' + e.message, 'err'); });
+}
+function buildUnitFilterChips() {
+  var cats = ['Unit Uniform','Kelab & Persatuan','Sukan & Permainan','Kebitaraan Kelab','Kebitaraan Sukan'];
+  var html = '<div class="fchip act" onclick="filterUnits(\'Semua\',this)">Semua</div>';
+  cats.forEach(function(c) { if (S.units.some(function(u) { return u.Kategori === c; })) html += '<div class="fchip" onclick="filterUnits(\'' + c + '\',this)">' + c.split(' ')[0] + ' ' + c.split(' ')[1] + '</div>'; });
+  document.getElementById('unit-filter').innerHTML = html;
+}
+function filterUnits(kat, el) {
+  document.querySelectorAll('#unit-filter .fchip').forEach(function(c) { c.classList.remove('act'); }); el.classList.add('act');
+  renderUnitList(kat === 'Semua' ? S.units : S.units.filter(function(u) { return u.Kategori === kat; }));
+}
+function renderUnitList(units) {
+  if (!units.length) { document.getElementById('unit-list').innerHTML = '<div class="empty-state"><i class="ti ti-folder-x"></i><h3>Tiada unit</h3><p>Tambah unit pertama untuk bermula.</p></div>'; return; }
+  var html = '<div class="card">';
+  units.forEach(function(u) {
+    var ico = u.LogoURL ? '<img src="' + driveImg(u.LogoURL) + '" style="width:36px;height:36px;border-radius:8px;object-fit:cover" onerror="this.style.display=\'none\';">' : '<span style="font-size:20px">📋</span>';
+    var st = u.Status === 'Aktif' ? '<span class="bdg bdg-ok">Aktif</span>' : '<span class="bdg bdg-of">Tidak aktif</span>';
+    html += '<div class="li clickable" onclick="loadUnitDetail(\'' + u.UnitID + '\')">';
+    html += '<div class="av av-b">' + ico + '</div>';
+    html += '<div class="li-info"><div class="li-nm">' + esc(u.NamaUnit) + '</div><div class="li-sub">' + u.Kategori + '</div></div>';
+    html += st + '<i class="ti ti-chevron-right" style="color:var(--t3);font-size:16px;flex-shrink:0"></i></div>';
+  });
+  html += '</div>';
+  document.getElementById('unit-list').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════
+// UNIT DETAIL
+// ═══════════════════════════════════════════════
+function loadUnitDetail(unitId) {
+  S.selectedUnit = S.allUnits.find(function(u) { return u.UnitID === unitId; }) || { UnitID: unitId, NamaUnit: '—', Kategori: '—' };
+  setTxt('ud-nm', S.selectedUnit.NamaUnit); setTxt('ud-kat', S.selectedUnit.Kategori);
+  switchUnitTab('guru'); showView('vud'); loadGuruByUnit();
+}
+function switchUnitTab(tab) {
+  S.unitTab = tab;
+  document.getElementById('tab-guru').classList.toggle('act', tab === 'guru');
+  document.getElementById('tab-murid').classList.toggle('act', tab === 'murid');
+  document.getElementById('tc-guru').style.display = tab === 'guru' ? 'block' : 'none';
+  document.getElementById('tc-murid').style.display = tab === 'murid' ? 'block' : 'none';
+  if (tab === 'murid') loadMuridByUnit();
+}
+function loadGuruByUnit() {
+  document.getElementById('guru-unit-list').innerHTML = skelHtml(2);
+  callGAS('getGurusByUnit', {unitId: S.selectedUnit.UnitID}, function(r) {
+    if (!r.success) { toast(r.message, 'err'); return; }
+    var gurus = r.data || [];
+    if (!gurus.length) { document.getElementById('guru-unit-list').innerHTML = '<div class="empty-state" style="padding:28px"><i class="ti ti-user-x"></i><h3>Tiada guru</h3><p>Assign guru penasihat atau pembantu.</p></div>'; return; }
+    var html = '<div class="card">';
+    gurus.forEach(function(g) {
+      var jw = g.Jawatan === 'Penasihat' ? '<span class="bdg bdg-pn">Penasihat</span>' : '<span class="bdg bdg-pb">Pembantu</span>';
+      html += '<div class="li"><div class="av av-b">' + g.Nama.charAt(0).toUpperCase() + '</div><div class="li-info"><div class="li-nm">' + esc(g.Nama) + '</div><div class="li-sub">' + g.Kategori + '</div></div>' + jw;
+      html += '<button class="btn btn-d btn-ic btn-sm" onclick="removeGuruConfirm(\'' + g.GuruID + '\',\'' + esc(g.Nama) + '\')" aria-label="Keluarkan guru"><i class="ti ti-x"></i></button></div>';
+    });
+    html += '</div>';
+    document.getElementById('guru-unit-list').innerHTML = html;
+  }, function(e) { toast('Ralat: ' + e.message, 'err'); });
+}
+function removeGuruConfirm(guruId, nama) {
+  confirm_('Keluarkan Guru', 'Keluarkan ' + nama + ' dari unit ini?', function() {
+    showLoad();
+    callGAS('removeGuruFromUnit', {guruId: guruId, unitId: S.selectedUnit.UnitID},
+      function(r) { hideLoad(); if (r.success) { toast('Guru dikeluarkan', 'ok'); loadGuruByUnit(); } else toast(r.message, 'err'); },
+      function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+  }, 'Keluarkan');
+}
+function loadMuridByUnit() {
+  document.getElementById('murid-unit-list').innerHTML = skelHtml(3);
+  callGAS('getDarjahByUnit', {unitId: S.selectedUnit.UnitID}, function(r1) {
+    var darjah = r1.success ? r1.data : [];
+    var fhtml = '<div class="fchip act" onclick="filterMuridUnit(\'Semua\',this)">Semua</div>';
+    darjah.forEach(function(d) { fhtml += '<div class="fchip" onclick="filterMuridUnit(\'' + d + '\',this)">Darjah ' + d + '</div>'; });
+    document.getElementById('ud-murid-darjah').innerHTML = fhtml;
+    callGAS('getAhliByUnit', {unitId: S.selectedUnit.UnitID},
+      function(r2) { if (!r2.success) { toast(r2.message, 'err'); return; } renderMuridByUnit(r2.data || []); },
+      function(e) { toast('Ralat: ' + e.message, 'err'); });
+  }, function() {});
+}
+function filterMuridUnit(d, el) {
+  document.querySelectorAll('#ud-murid-darjah .fchip').forEach(function(c) { c.classList.remove('act'); }); el.classList.add('act');
+}
+function renderMuridByUnit(ahli) {
+  if (!ahli.length) { document.getElementById('murid-unit-list').innerHTML = '<div class="empty-state" style="padding:28px"><i class="ti ti-user-x"></i><h3>Tiada ahli</h3><p>Daftar murid ke unit ini.</p></div>'; return; }
+  var html = '<div class="card">';
+  ahli.forEach(function(m) {
+    var isLF = String(m.LowFunctioning).toLowerCase() === 'ya';
+    html += '<div class="li"><div class="av ' + (m.Jantina === 'P' ? 'av-r' : 'av-b') + '">' + m.Nama.charAt(0) + '</div><div class="li-info"><div class="li-nm">' + (isLF ? '<span class="bdg bdg-lf" style="margin-right:4px">LF</span>' : '') + esc(m.Nama) + '</div><div class="li-sub">' + m.Kelas + ' · ' + m.Kategori + '</div></div>';
+    html += '<button class="btn btn-d btn-ic btn-sm" onclick="removeAhliConfirm(\'' + m.IC + '\',\'' + esc(m.Nama) + '\')" aria-label="Keluarkan murid"><i class="ti ti-x"></i></button></div>';
+  });
+  html += '</div>';
+  document.getElementById('murid-unit-list').innerHTML = html;
+}
+function removeAhliConfirm(ic, nama) {
+  confirm_('Keluarkan Murid', 'Keluarkan ' + nama + ' dari unit ini?', function() {
+    showLoad();
+    callGAS('removeAhli', {ic: ic, unitId: S.selectedUnit.UnitID},
+      function(r) { hideLoad(); if (r.success) { toast('Murid dikeluarkan', 'ok'); loadMuridByUnit(); } else toast(r.message, 'err'); },
+      function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+  }, 'Keluarkan');
+}
+
+// ═══════════════════════════════════════════════
+// MODAL UNIT
+// ═══════════════════════════════════════════════
+function openAddUnit() { setTxt('um-ttl', 'Tambah Unit'); document.getElementById('um-id').value = ''; document.getElementById('um-nama').value = ''; document.getElementById('um-kat').value = ''; document.getElementById('um-status').value = 'Aktif'; document.getElementById('um-logo-box').innerHTML = '<i class="ti ti-photo-plus"></i>'; S.logoB64 = null; S.logoMime = null; S.logoName = null; clearAllFieldErr(['um-nama','um-kat']); openModal('ov-unit'); }
+function openEditUnit() { if (!S.selectedUnit) return; setTxt('um-ttl', 'Edit Unit'); document.getElementById('um-id').value = S.selectedUnit.UnitID; document.getElementById('um-nama').value = S.selectedUnit.NamaUnit || ''; document.getElementById('um-kat').value = S.selectedUnit.Kategori || ''; document.getElementById('um-status').value = S.selectedUnit.Status || 'Aktif'; document.getElementById('um-logo-box').innerHTML = S.selectedUnit.LogoURL ? '<img src="' + driveImg(S.selectedUnit.LogoURL, 'w300-h300') + '">' : '<i class="ti ti-photo-plus"></i>'; S.logoB64 = null; clearAllFieldErr(['um-nama','um-kat']); openModal('ov-unit'); }
+function previewLogo(input) { if (!input.files[0]) return; if (input.files[0].size > 3 * 1024 * 1024) { toast('Gambar terlalu besar. Maks 3MB.', 'err'); input.value = ''; return; } var f = input.files[0]; var rd = new FileReader(); rd.onload = function(e) { document.getElementById('um-logo-box').innerHTML = '<img src="' + e.target.result + '">'; S.logoB64 = e.target.result.split(',')[1]; S.logoMime = f.type; S.logoName = f.name; }; rd.readAsDataURL(f); }
+function doSaveUnit() {
+  var uid = document.getElementById('um-id').value; var nama = document.getElementById('um-nama').value.trim(); var kat = document.getElementById('um-kat').value; var status = document.getElementById('um-status').value;
+  clearAllFieldErr(['um-nama','um-kat']); var valid = true;
+  if (!nama) { showFieldErr('um-nama', 'Nama unit tidak boleh kosong'); valid = false; }
+  if (!kat)  { showFieldErr('um-kat', 'Sila pilih kategori'); valid = false; }
+  if (!valid) return;
+  showLoad('Menyimpan unit...');
+  if (uid) {
+    callGAS('updateUnit', {unitId: uid, namaUnit: nama, kategori: kat, status: status},
+      function(r) { if (!r.success) { hideLoad(); toast(r.message, 'err'); return; } if (S.logoB64) uploadLogo(uid); else { hideLoad(); afterSaveUnit(); } },
+      function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+  } else {
+    callGAS('addUnit', {namaUnit: nama, kategori: kat, status: status},
+      function(r) { if (!r.success) { hideLoad(); toast(r.message, 'err'); return; } var nid = r.data.unitId; if (S.logoB64) uploadLogo(nid); else { hideLoad(); afterSaveUnit(); } },
+      function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+  }
+}
+function uploadLogo(unitId) {
+  callGAS('uploadUnitLogo', {unitId: unitId, base64Data: S.logoB64, mimeType: S.logoMime, fileName: S.logoName},
+    function(r) { hideLoad(); afterSaveUnit(); if (!r.success) toast('Logo gagal diupload: ' + r.message, 'warn'); },
+    function(e) { hideLoad(); afterSaveUnit(); toast('Ralat upload logo', 'warn'); });
+}
+function afterSaveUnit() { closeModal('ov-unit'); toast('Unit disimpan', 'ok'); loadUnitList(); loadLauncher(); }
+
+// ═══════════════════════════════════════════════
+// ASSIGN GURU
+// ═══════════════════════════════════════════════
+function openAssignGuru() {
+  showLoad('Memuatkan guru...');
+  callGAS('getGurus', {},
+    function(r) { hideLoad(); if (!r.success) { toast(r.message, 'err'); return; } var sel = document.getElementById('ag-sel'); sel.innerHTML = '<option value="">-- Pilih Guru --</option>'; (r.data || []).forEach(function(g) { sel.innerHTML += '<option value="' + g.GuruID + '">' + esc(g.Nama) + ' (' + g.Kategori + ')</option>'; }); clearAllFieldErr(['ag-sel']); openModal('ov-guru'); },
+    function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+function doAssignGuru() {
+  var gid = document.getElementById('ag-sel').value; var jwt = document.getElementById('ag-jwt').value;
+  clearAllFieldErr(['ag-sel']); if (!gid) { showFieldErr('ag-sel', 'Sila pilih guru'); return; }
+  showLoad();
+  callGAS('assignGuruToUnit', {guruId: gid, unitId: S.selectedUnit.UnitID, jawatan: jwt},
+    function(r) { hideLoad(); if (r.success) { closeModal('ov-guru'); toast('Guru diassign', 'ok'); loadGuruByUnit(); } else toast(r.message, 'err'); },
+    function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+// ═══════════════════════════════════════════════
+// ADD MURID TO UNIT
+// ═══════════════════════════════════════════════
+function openAddMuridToUnit() {
+  if (!S.selectedUnit) return; showLoad('Memuatkan...');
+  callGAS('getDarjahByUnit', {unitId: S.selectedUnit.UnitID}, function(r1) {
+    var darjah = r1.success ? r1.data : [];
+    var fh = '<div class="fchip act" onclick="filterMuridModal(\'Semua\',this)">Semua</div>';
+    darjah.forEach(function(d) { fh += '<div class="fchip" onclick="filterMuridModal(\'' + d + '\',this)">Darjah ' + d + '</div>'; });
+    document.getElementById('mu-darjah').innerHTML = fh;
+    callGAS('getMuridForUnitSelection', {unitId: S.selectedUnit.UnitID, darjahFilter: 'Semua'},
+      function(r2) { hideLoad(); if (!r2.success) { toast(r2.message, 'err'); return; } S.muridForUnit = r2.data || []; renderMuridModal(S.muridForUnit); openModal('ov-mu'); },
+      function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+  }, function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+function filterMuridModal(d, el) {
+  document.querySelectorAll('#mu-darjah .fchip').forEach(function(c) { c.classList.remove('act'); }); el.classList.add('act'); showLoad();
+  callGAS('getMuridForUnitSelection', {unitId: S.selectedUnit.UnitID, darjahFilter: d},
+    function(r) { hideLoad(); if (!r.success) { toast(r.message, 'err'); return; } S.muridForUnit = r.data || []; renderMuridModal(S.muridForUnit); },
+    function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+function renderMuridModal(murid) {
+  if (!murid.length) { document.getElementById('mu-list').innerHTML = '<div class="empty-state" style="padding:20px"><i class="ti ti-user-x"></i><h3>Tiada murid</h3></div>'; updateMuCount(); return; }
+  var html = '';
+  murid.forEach(function(m) {
+    var dis = m.inUnit || m.isPenuh; var chk = m.inUnit;
+    var lbl = m.isPenuh ? '<span class="bdg bdg-penuh" style="margin-left:4px">Penuh</span>' : m.inUnit ? '<span class="bdg bdg-ok" style="margin-left:4px">Dalam unit</span>' : '';
+    html += '<div class="cbrow' + (dis ? ' penuh' : '') + '" ' + (dis ? '' : 'onclick="toggleMuCheck(\'' + m.IC.replace(/'/g, '\\\'') + '\')"') + '>';
+    html += '<div class="cb' + (chk ? ' on' : '') + '" id="mc-' + m.IC.replace(/[^a-z0-9]/gi, '') + '">' + (chk ? '<i class="ti ti-check" style="font-size:12px;color:#fff"></i>' : '') + '</div>';
+    html += '<div style="flex:1;min-width:0"><div style="font-size:var(--fs-sm);font-weight:500;color:var(--t)">' + esc(m.Nama) + lbl + '</div><div style="font-size:var(--fs-xs);color:var(--t3)">' + m.Kelas + ' · ' + m.Kategori + '</div></div></div>';
+  });
+  document.getElementById('mu-list').innerHTML = html; updateMuCount();
+}
+function toggleMuCheck(ic) { var cid = ic.replace(/[^a-z0-9]/gi, ''); var cb = document.getElementById('mc-' + cid); if (!cb) return; var on = cb.classList.contains('on'); cb.classList.toggle('on', !on); cb.innerHTML = !on ? '<i class="ti ti-check" style="font-size:12px;color:#fff"></i>' : ''; updateMuCount(); }
+function updateMuCount() { setTxt('mu-count', document.querySelectorAll('#mu-list .cb.on').length); }
+function toggleSelectAll() { var rows = document.querySelectorAll('#mu-list .cbrow:not(.penuh)'); var allOn = document.querySelectorAll('#mu-list .cbrow:not(.penuh) .cb.on').length === rows.length; rows.forEach(function(row) { var cb = row.querySelector('.cb'); if (!cb) return; cb.classList.toggle('on', !allOn); cb.innerHTML = !allOn ? '<i class="ti ti-check" style="font-size:12px;color:#fff"></i>' : ''; }); updateMuCount(); }
+function doAddMuridBulk() {
+  var sel = []; document.querySelectorAll('#mu-list .cb.on').forEach(function(cb) { var cid = cb.id.replace('mc-', ''); var m = S.muridForUnit.find(function(m2) { return m2.IC.replace(/[^a-z0-9]/gi, '') === cid; }); if (m) sel.push(m.IC); });
+  if (!sel.length) { toast('Tiada murid dipilih', 'err'); return; }
+  showLoad('Mendaftar murid...');
+  callGAS('addAhliBulk', {icList: sel, unitId: S.selectedUnit.UnitID},
+    function(r) { hideLoad(); if (r.success) { closeModal('ov-mu'); toast(r.message, 'ok'); loadMuridByUnit(); } else toast(r.message, 'err'); },
+    function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+// ═══════════════════════════════════════════════
+// CSV
+// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// DATA VIEW — Murid & Guru (gabungan)
+// ═══════════════════════════════════════════════
+function switchDataTab(tab) {
+  var isMurid = tab === 'murid';
+  document.getElementById('dt-murid').style.display = isMurid ? 'block' : 'none';
+  document.getElementById('dt-guru').style.display  = isMurid ? 'none' : 'block';
+  var tm = document.getElementById('dt-tab-murid');
+  var tg = document.getElementById('dt-tab-guru');
+  tm.style.borderBottomColor = isMurid ? 'var(--acc)' : 'transparent';
+  tm.style.color = isMurid ? 'var(--pl)' : 'var(--t3)';
+  tm.style.fontWeight = isMurid ? '700' : '600';
+  tg.style.borderBottomColor = isMurid ? 'transparent' : 'var(--acc)';
+  tg.style.color = isMurid ? 'var(--t3)' : 'var(--pl)';
+  tg.style.fontWeight = isMurid ? '600' : '700';
+  S.dataTab = tab;
+}
+
+function loadDataView() {
+  S.dataTab = S.dataTab || 'murid';
+  switchDataTab(S.dataTab);
+  loadMuridData();
+  loadGuruData();
+}
+
+// — MURID —
+function loadMuridData() {
+  document.getElementById('data-murid-list').innerHTML = skelHtml(5);
+  S.muridLFChanges = {};
+  callGAS('getMurid', {darjahFilter: 'Semua'}, function(r) {
+    if (!r.success) { toast(r.message, 'err'); return; }
+    S.muridList = r.data || [];
+    var ds = {};
+    S.muridList.forEach(function(m) { if (m.Darjah) ds[String(m.Darjah)] = true; });
+    var fh = '<div class="fchip act" onclick="filterDataMurid(\'Semua\',this)">Semua</div>';
+    Object.keys(ds).sort().forEach(function(d) {
+      fh += '<div class="fchip" onclick="filterDataMurid(\'' + d + '\',this)">Darjah ' + d + '</div>';
+    });
+    document.getElementById('data-murid-darjah').innerHTML = fh;
+    renderDataMurid(S.muridList);
+    setTxt('data-sub', S.muridList.length + ' murid · ' + (S.dataGuruList || []).length + ' guru');
+  }, function(e) { toast('Ralat: ' + e.message, 'err'); });
+}
+
+function filterDataMurid(d, el) {
+  document.querySelectorAll('#data-murid-darjah .fchip').forEach(function(c) { c.classList.remove('act'); });
+  el.classList.add('act');
+  renderDataMurid(d === 'Semua' ? S.muridList : S.muridList.filter(function(m) { return String(m.Darjah) === d; }));
+}
+
+function renderDataMurid(murid) {
+  if (!murid.length) {
+    document.getElementById('data-murid-list').innerHTML = '<div class="empty-state"><i class="ti ti-user-x"></i><h3>Tiada murid</h3><p>Tambah murid atau import CSV.</p></div>';
+    return;
+  }
+  var html = '<div class="card">';
+  murid.forEach(function(m) {
+    var isLF = S.muridLFChanges[m.IC] !== undefined ? S.muridLFChanges[m.IC] : String(m.LowFunctioning).toLowerCase() === 'ya';
+    html += '<div class="trow">';
+    html += '<div style="flex:1;min-width:0">';
+    html += '<div style="font-size:var(--fs-sm);font-weight:500;color:var(--t)">' + esc(m.Nama) + '</div>';
+    html += '<div style="font-size:var(--fs-xs);color:var(--t3)">' + esc(m.IC) + ' · ' + esc(m.Kelas || '—') + ' · Darjah ' + esc(m.Darjah || '—') + '</div>';
+    html += '<div style="font-size:var(--fs-xs);color:var(--t3)">' + esc(m.Kategori || '') + (m.NoOKU ? ' · ' + esc(m.NoOKU) : '') + '</div>';
+    html += '</div>';
+    html += '<div style="display:flex;align-items:center;gap:8px">';
+    html += (isLF ? '<span class="bdg bdg-lf">LF</span>' : '');
+    html += '<div class="tg' + (isLF ? ' on' : '') + '" onclick="toggleLF(\'' + m.IC.replace(/'/g, '\\\'') + '\')" role="switch" aria-checked="' + (isLF ? 'true' : 'false') + '" title="Toggle Low Functioning"></div>';
+    html += '<div onclick="confirmDeleteMurid(\'' + m.IC.replace(/'/g, '\\\'') + '\',\'' + esc(m.Nama).replace(/'/g, '\\\'') + '\')" style="width:28px;height:28px;border-radius:50%;background:rgba(220,38,38,.08);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0" title="Padam"><i class="ti ti-trash" style="font-size:13px;color:var(--r)"></i></div>';
+    html += '</div></div>';
+  });
+  html += '</div>';
+  document.getElementById('data-murid-list').innerHTML = html;
+}
+
+// — GURU —
+function loadGuruData() {
+  document.getElementById('data-guru-list').innerHTML = skelHtml(3);
+  callGAS('getGurus', {}, function(r) {
+    if (!r.success) { toast(r.message, 'err'); return; }
+    S.dataGuruList = r.data || [];
+    renderDataGuru(S.dataGuruList);
+    setTxt('data-sub', (S.muridList || []).length + ' murid · ' + S.dataGuruList.length + ' guru');
+  }, function(e) { toast('Ralat: ' + e.message, 'err'); });
+}
+
+function renderDataGuru(gurus) {
+  if (!gurus.length) {
+    document.getElementById('data-guru-list').innerHTML = '<div class="empty-state"><i class="ti ti-user-x"></i><h3>Tiada guru</h3><p>Tambah guru atau import CSV.</p></div>';
+    return;
+  }
+  var html = '<div class="card">';
+  gurus.forEach(function(g) {
+    html += '<div class="trow">';
+    html += '<div style="flex:1;min-width:0">';
+    html += '<div style="font-size:var(--fs-sm);font-weight:500;color:var(--t)">' + esc(g.Nama) + '</div>';
+    html += '<div style="font-size:var(--fs-xs);color:var(--t3)">' + esc(g.Kategori || '—') + '</div>';
+    html += '</div>';
+    html += '<div onclick="confirmDeleteGuru(\'' + g.GuruID + '\',\'' + esc(g.Nama).replace(/'/g, '\\\'') + '\')" style="width:32px;height:32px;border-radius:50%;background:rgba(220,38,38,.08);display:flex;align-items:center;justify-content:center;cursor:pointer" title="Padam"><i class="ti ti-trash" style="font-size:14px;color:var(--r)"></i></div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('data-guru-list').innerHTML = html;
+}
+
+// — TAMBAH MANUAL —
+function doAddMuridSingle() {
+  var ic    = document.getElementById('am-ic').value.trim().replace(/[-\s]/g, '');
+  var nama  = document.getElementById('am-nama').value.trim();
+  var kelas = document.getElementById('am-kelas').value.trim();
+  var darjah= document.getElementById('am-darjah').value;
+  var jant  = document.getElementById('am-jantina').value;
+  var oku   = document.getElementById('am-oku').value.trim();
+  var kat   = document.getElementById('am-kat').value;
+  var valid = true;
+  clearAllFieldErr(['am-ic','am-nama','am-darjah']);
+  if (!ic)    { showFieldErr('am-ic', 'IC diperlukan'); valid = false; }
+  if (!nama)  { showFieldErr('am-nama', 'Nama diperlukan'); valid = false; }
+  if (!darjah){ showFieldErr('am-darjah', 'Darjah diperlukan'); valid = false; }
+  if (!valid) return;
+  showLoad('Menambah murid...');
+  callGAS('addMuridSingle', {ic: ic, nama: nama, kelas: kelas, darjah: darjah, jantina: jant, noOku: oku, kategori: kat}, function(r) {
+    hideLoad();
+    if (r.success) {
+      toast(r.message, 'ok');
+      closeModal('ov-add-murid');
+      ['am-ic','am-nama','am-kelas','am-oku'].forEach(function(id) { document.getElementById(id).value = ''; });
+      document.getElementById('am-darjah').value = '';
+      document.getElementById('am-jantina').value = '';
+      document.getElementById('am-kat').value = 'Masalah Pembelajaran';
+      loadMuridData();
+    } else toast(r.message, 'err');
+  }, function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+function doAddGuruSingle() {
+  var nama = document.getElementById('ag2-nama').value.trim();
+  var kat  = document.getElementById('ag2-kat').value;
+  clearAllFieldErr(['ag2-nama']);
+  if (!nama) { showFieldErr('ag2-nama', 'Nama diperlukan'); return; }
+  showLoad('Menambah guru...');
+  callGAS('addGuruSingle', {nama: nama, kategori: kat}, function(r) {
+    hideLoad();
+    if (r.success) {
+      toast(r.message, 'ok');
+      closeModal('ov-add-guru');
+      document.getElementById('ag2-nama').value = '';
+      document.getElementById('ag2-kat').value = 'Masalah Pembelajaran';
+      loadGuruData();
+    } else toast(r.message, 'err');
+  }, function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+// — PADAM —
+function confirmDeleteMurid(ic, nama) {
+  confirm_('Padam Murid', 'Padam "' + nama + '"? Rekod ahli unit berkaitan turut dipadam.', function() {
+    showLoad('Memadam...');
+    callGAS('deleteMurid', {ic: ic},
+      function(r) { hideLoad(); if (r.success) { toast(r.message, 'ok'); loadMuridData(); } else toast(r.message, 'err'); },
+      function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+  }, 'Padam', true);
+}
+
+function confirmDeleteGuru(guruId, nama) {
+  confirm_('Padam Guru', 'Padam "' + nama + '"? Penugasan unit berkaitan turut dipadam.', function() {
+    showLoad('Memadam...');
+    callGAS('deleteGuru', {guruId: guruId},
+      function(r) { hideLoad(); if (r.success) { toast(r.message, 'ok'); loadGuruData(); } else toast(r.message, 'err'); },
+      function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+  }, 'Padam', true);
+}
+
+// — TEMPLATE CSV —
+function downloadTemplate(type) {
+  var csv, filename;
+  if (type === 'murid') {
+    csv  = 'IC,Nama,Kelas,Darjah,Jantina,NoOKU,Kategori\r\n';
+    csv += '010203040001,Ahmad bin Ali,4 Bestari,4,L,OKU001,Masalah Pembelajaran\r\n';
+    csv += '010203040002,Siti binti Hamid,4 Bestari,4,P,OKU002,Pendengaran\r\n';
+    csv += '010203040003,Razif bin Samad,5 Cerdik,5,L,OKU003,Masalah Pembelajaran\r\n';
+    filename = 'template_murid.csv';
+  } else {
+    csv  = 'Nama,Kategori\r\n';
+    csv += 'Cikgu Ahmad bin Ali,Masalah Pembelajaran\r\n';
+    csv += 'Cikgu Siti binti Hamid,Pendengaran\r\n';
+    csv += 'Cikgu Razif bin Samad,Masalah Pembelajaran\r\n';
+    filename = 'template_guru.csv';
+  }
+  var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+  toast('Template ' + (type === 'murid' ? 'murid' : 'guru') + ' dimuat turun', 'ok');
+}
+
+// — LF TOGGLE & SAVE (dikongsi) —
+function toggleLF(ic) {
+  var existing = S.muridList.find(function(m) { return m.IC === ic; });
+  var wasLF = S.muridLFChanges[ic] !== undefined ? S.muridLFChanges[ic] : String((existing || {}).LowFunctioning || '').toLowerCase() === 'ya';
+  S.muridLFChanges[ic] = !wasLF;
+  var activeEl = document.querySelector('#data-murid-darjah .fchip.act');
+  var darjah = activeEl ? activeEl.textContent.replace('Darjah ', '') : 'Semua';
+  filterDataMurid(darjah, activeEl || document.querySelector('#data-murid-darjah .fchip'));
+}
+
+function saveLFBatch() {
+  var keys = Object.keys(S.muridLFChanges);
+  if (!keys.length) { toast('Tiada perubahan LF untuk disimpan', 'warn'); return; }
+  showLoad('Menyimpan perubahan LF...');
+  var pending = keys.length, hasErr = false;
+  keys.forEach(function(ic) {
+    callGAS('setLowFunctioning', {ic: ic, isLF: S.muridLFChanges[ic]},
+      function(r) {
+        if (!r.success) hasErr = true;
+        pending--;
+        if (pending === 0) { hideLoad(); if (!hasErr) { toast('Perubahan LF disimpan', 'ok'); S.muridLFChanges = {}; loadMuridData(); } else toast('Beberapa rekod gagal disimpan', 'err'); }
+      },
+      function() { pending--; hasErr = true; if (pending === 0) { hideLoad(); toast('Ralat semasa menyimpan', 'err'); } });
+  });
+}
+
+// — CSV IMPORT (dikongsi dengan modal) —
+function handleCSV(type, input) {
+  if (!input.files[0]) return;
+  if (input.files[0].size > 5 * 1024 * 1024) { toast('Fail terlalu besar. Maks 5MB.', 'err'); input.value = ''; return; }
+  var rd = new FileReader();
+  rd.onload = function(e) {
+    var txt = e.target.result;
+    if (type === 'murid') { S.csvMurid = txt; renderCSVPreview('m', txt); }
+    else { S.csvGuru = txt; renderCSVPreview('g', txt); }
+  };
+  rd.readAsText(input.files[0], 'UTF-8');
+}
+
+function renderCSVPreview(t, txt) {
+  var lines = txt.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').filter(function(l) { return l.trim(); });
+  var hdrs  = lines[0].split(',');
+  var total = lines.length - 1;
+  var tbl   = '<tr>' + hdrs.map(function(h) { return '<th>' + esc(h.trim()) + '</th>'; }).join('') + '</tr>';
+  lines.slice(1, 6).forEach(function(row) { tbl += '<tr>' + row.split(',').map(function(c) { return '<td>' + esc(c.trim()) + '</td>'; }).join('') + '</tr>'; });
+  document.getElementById('csv-' + t + '-tbl').innerHTML = tbl;
+  setTxt('csv-' + t + '-ttl', 'Preview — 5 daripada ' + total + ' rekod');
+  document.getElementById('csv-' + t + '-bdg').textContent = total + ' rekod';
+  document.getElementById('csv-' + t + '-preview').style.display = 'block';
+}
+
+function doUploadMurid() {
+  if (!S.csvMurid) { toast('Sila pilih fail CSV', 'err'); return; }
+  showLoad('Mengimport murid...');
+  callGAS('uploadMurid', {csvText: S.csvMurid}, function(r) {
+    hideLoad();
+    if (r.success) {
+      toast(r.message, 'ok');
+      document.getElementById('csv-m-preview').style.display = 'none';
+      S.csvMurid = null; document.getElementById('file-m').value = '';
+      closeModal('ov-import-murid');
+      loadMuridData();
+    } else toast(r.message, 'err');
+  }, function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+function doUploadGuru() {
+  if (!S.csvGuru) { toast('Sila pilih fail CSV', 'err'); return; }
+  showLoad('Mengimport guru...');
+  callGAS('uploadGuru', {csvText: S.csvGuru}, function(r) {
+    hideLoad();
+    if (r.success) {
+      toast(r.message, 'ok');
+      document.getElementById('csv-g-preview').style.display = 'none';
+      S.csvGuru = null; document.getElementById('file-g').value = '';
+      closeModal('ov-import-guru');
+      loadGuruData();
+    } else toast(r.message, 'err');
+  }, function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+// ═══════════════════════════════════════════════
+// LAPORAN SEMUA UNIT
+// ═══════════════════════════════════════════════
+function loadAllLaporan() {
+  document.getElementById('lap-all-list').innerHTML = skelHtml(4);
+  callGAS('getAllLaporan', {}, function(r) {
+    if (!r.success) { toast(r.message, 'err'); return; }
+    S.allLaporan = r.data || [];
+    renderLapAll(S.allLaporan, S.lapFilter);
+  }, function(e) { toast('Ralat: ' + e.message, 'err'); });
+}
+function filterLap(f, el) { document.querySelectorAll('#lap-filter .fchip').forEach(function(c) { c.classList.remove('act'); }); el.classList.add('act'); S.lapFilter = f; renderLapAll(S.allLaporan, f); }
+function renderLapAll(laporan, filter) {
+  var filtered = filter === 'Semua' ? laporan : laporan.filter(function(l) { return l.StatusLaporan === filter; });
+  if (!filtered.length) { document.getElementById('lap-all-list').innerHTML = '<div class="empty-state"><i class="ti ti-file-x"></i><h3>Tiada laporan</h3><p>Laporan akan muncul setelah guru mengisi perjumpaan.</p></div>'; return; }
+  var html = '<div class="card">';
+  filtered.forEach(function(l) {
+    var uname = unitName(l.UnitID);
+    var st = l.StatusLaporan === 'Selesai' ? '<span class="bdg bdg-ok">Selesai</span>' : '<span class="bdg bdg-dr">Draf</span>';
+    var signBdg = '';
+    if (l.SignGPKURL) signBdg = '<span class="bdg" style="background:#EEF2FF;color:var(--acc);border:1px solid #C7D2FE;margin-left:3px"><i class="ti ti-writing" style="font-size:9px"></i></span>';
+    html += '<div class="li clickable" onclick="openLapDetail(\'' + l.PerjumpaanID + '\',\'' + l.UnitID + '\')">';
+    html += '<div class="av av-p"><i class="ti ti-file-description" style="font-size:18px"></i></div>';
+    html += '<div class="li-info"><div class="li-nm">' + esc(l.TajukAktiviti || '(Tiada tajuk)') + '</div><div class="li-sub">' + esc(uname) + ' · Perjumpaan ' + (l.PerjumpaanID || '—') + ' · ' + (l.TarikhSimpan || '—') + '</div></div>';
+    html += st + signBdg + '<i class="ti ti-chevron-right" style="color:var(--t3);font-size:16px;flex-shrink:0;margin-left:4px"></i></div>';
+  });
+  html += '</div>';
+  document.getElementById('lap-all-list').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════
+// LAPORAN DETAIL (ADMIN)
+// ═══════════════════════════════════════════════
+function openLapDetail(perjumpaanId, unitId) {
+  S.currentLapId = null;
+  S.currentPrjData = null;
+  S.currentLapData = null;
+  S.sign = { setiausaha: null, guru: null, gpk: null };
+  S.signNama = { setiausaha: '', guru: '', gpk: '' };
+  resetSignBox('setiausaha'); resetSignBox('guru'); resetSignBox('gpk');
+  document.getElementById('lad-catatan').value = '';
+
+  showView('vlap-detail');
+  showLoad('Memuatkan laporan...');
+  callGAS('getLaporanPreviewData', {perjumpaanId: perjumpaanId, unitId: unitId}, function(r) {
+    hideLoad();
+    if (!r.success) { toast(r.message, 'err'); return; }
+    var d = r.data;
+    var l = d.laporan || {};
+    var p = d.perjumpaan || {};
+    var kh = d.kehadiran || {};
+    S.currentLapId = l.LaporanID || null;
+    S.currentPrjData = { perjumpaanId: perjumpaanId, unitId: unitId };
+    S.currentLapData = l;
+    S.currentPenasihat = d.penasihat || '';
+    setTxt('lad-ttl', 'Laporan Perjumpaan ke-' + (p.NoPerjumpaan || '—'));
+    setTxt('lad-sub', esc(d.unit.NamaUnit || ''));
+    setTxt('lad-no', p.NoPerjumpaan || '—');
+    setTxt('lad-tarikh', p.Tarikh || '—');
+    setTxt('lad-masa', l.Masa || '—');
+    setTxt('lad-tempat', l.Tempat || '—');
+    setTxt('lad-penasihat', d.penasihat || '—');
+    setTxt('lad-hadir', (kh.hadir || 0) + ' / ' + (kh.totalAhli || 0));
+    document.getElementById('lad-catatan').value = l.CatatanPemantauan || '';
+    ['setiausaha','guru','gpk'].forEach(function(jenis) {
+      var urlKey = jenis === 'setiausaha' ? 'SignSetiausahaURL' : (jenis === 'guru' ? 'SignGuruURL' : 'SignGPKURL');
+      var nmKey  = jenis === 'setiausaha' ? 'NamaSetiausaha'   : (jenis === 'guru' ? 'NamaGuru'   : 'NamaGPK');
+      if (l[urlKey]) { S.sign[jenis] = l[urlKey]; S.signNama[jenis] = l[nmKey] || ''; showSignFromUrl(jenis, l[urlKey], l[nmKey] || ''); }
+    });
+  }, function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+function saveLapAdmin() {
+  if (!S.currentLapId) { toast('Tiada laporan untuk disimpan', 'err'); return; }
+  var catatan = document.getElementById('lad-catatan').value.trim();
+  var payload = {
+    CatatanPemantauan: catatan,
+    NamaSetiausaha: S.signNama.setiausaha || '',
+    NamaGuru: S.signNama.guru || '',
+    NamaGPK: S.signNama.gpk || ''
+  };
+  // Merge dengan data sedia ada supaya field lain tidak kosong
+  if (S.currentLapData) {
+    payload.TajukAktiviti  = S.currentLapData.TajukAktiviti  || '';
+    payload.Pelaksanaan    = S.currentLapData.Pelaksanaan    || '';
+    payload.Ulasan         = S.currentLapData.Ulasan         || '';
+    payload.Masa           = S.currentLapData.Masa           || '';
+    payload.Tempat         = S.currentLapData.Tempat         || '';
+    payload.TajukPIKeBM    = S.currentLapData.TajukPIKeBM    || '';
+    payload.BahanBantu     = S.currentLapData.BahanBantu     || '';
+    payload.ObjektifPIKeBM = S.currentLapData.ObjektifPIKeBM || '';
+    payload.AktivitiPIKeBM = S.currentLapData.AktivitiPIKeBM || '';
+    payload.RefleksiPIKeBM = S.currentLapData.RefleksiPIKeBM || '';
+    payload.TemaSivik      = S.currentLapData.TemaSivik      || '';
+    payload.MatlamatSivik  = S.currentLapData.MatlamatSivik  || '';
+    payload.AktivitiSivik  = S.currentLapData.AktivitiSivik  || '';
+    payload.StatusLaporan  = S.currentLapData.StatusLaporan  || 'Draf';
+  }
+  showLoad('Menyimpan catatan...');
+  callGAS('saveLaporan', {perjumpaanId: S.currentPrjData.perjumpaanId, unitId: S.currentPrjData.unitId, payload: payload},
+    function(r) { hideLoad(); if (r.success) { toast('Catatan disimpan', 'ok'); if (S.currentLapData) S.currentLapData.CatatanPemantauan = catatan; } else toast(r.message, 'err'); },
+    function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+// ═══════════════════════════════════════════════
+// TANDATANGAN — MODAL CANVAS (Admin)
+// ═══════════════════════════════════════════════
+var SIGN_CTX = null, SIGN_DRAWING = false, SIGN_COLOR = '#1a1a1a', SIGN_SIZE = 2, SIGN_HAS_STROKES = false;
+
+function openSignModal(jenis) {
+  if (S.sign[jenis]) { toast('Tandatangan sudah ada. Padam dahulu untuk tandatangan semula.', 'warn'); return; }
+  if (!S.currentLapId) { toast('Tiada laporan. Pastikan laporan telah disimpan oleh guru dahulu.', 'warn'); return; }
+  S.signPending = jenis;
+  var titles = { setiausaha: 'Tandatangan Setiausaha', guru: 'Tandatangan Guru Penasihat', gpk: 'Tandatangan GPK Kokurikulum' };
+  setTxt('sign-modal-ttl', titles[jenis] || 'Tandatangan');
+  document.getElementById('sign-nama-input').value = S.signNama[jenis] || '';
+  initSignCanvas(); openModal('ov-sign');
+}
+
+function initSignCanvas() {
+  var cvs = document.getElementById('sign-canvas'); var wrap = cvs.parentElement;
+  cvs.width = wrap.clientWidth || 480; cvs.height = 220;
+  SIGN_CTX = cvs.getContext('2d'); SIGN_CTX.fillStyle = '#ffffff'; SIGN_CTX.fillRect(0, 0, cvs.width, cvs.height);
+  SIGN_HAS_STROKES = false; document.getElementById('sign-hint').style.display = 'flex';
+  SIGN_COLOR = '#1a1a1a'; SIGN_SIZE = 2; document.getElementById('sign-sz').value = 2; setTxt('sign-sz-val', 2);
+  document.querySelectorAll('.sign-color').forEach(function(el) { el.classList.remove('act'); }); var first = document.querySelector('.sign-color'); if (first) first.classList.add('act');
+  cvs.onmousedown = function(e) { SIGN_DRAWING = true; SIGN_CTX.beginPath(); var p = getSignPos(e); SIGN_CTX.moveTo(p.x, p.y); };
+  cvs.onmousemove = function(e) { if (!SIGN_DRAWING) return; drawSignLine(getSignPos(e)); };
+  cvs.onmouseup = cvs.onmouseleave = function() { SIGN_DRAWING = false; };
+  cvs.ontouchstart = function(e) { e.preventDefault(); SIGN_DRAWING = true; SIGN_CTX.beginPath(); var p = getSignPos(e.touches[0]); SIGN_CTX.moveTo(p.x, p.y); };
+  cvs.ontouchmove = function(e) { e.preventDefault(); if (!SIGN_DRAWING) return; drawSignLine(getSignPos(e.touches[0])); };
+  cvs.ontouchend = function() { SIGN_DRAWING = false; };
+}
+function getSignPos(e) { var cvs = document.getElementById('sign-canvas'); var rect = cvs.getBoundingClientRect(); return { x: (e.clientX - rect.left) * (cvs.width / rect.width), y: (e.clientY - rect.top) * (cvs.height / rect.height) }; }
+function drawSignLine(p) { SIGN_CTX.lineWidth = SIGN_SIZE * 1.5; SIGN_CTX.strokeStyle = SIGN_COLOR; SIGN_CTX.lineCap = 'round'; SIGN_CTX.lineJoin = 'round'; SIGN_CTX.lineTo(p.x, p.y); SIGN_CTX.stroke(); SIGN_CTX.beginPath(); SIGN_CTX.moveTo(p.x, p.y); SIGN_HAS_STROKES = true; document.getElementById('sign-hint').style.display = 'none'; }
+function setSignColor(color, btn) { SIGN_COLOR = color; document.querySelectorAll('.sign-color').forEach(function(el) { el.classList.remove('act'); }); btn.classList.add('act'); }
+function setSignSize(val) { SIGN_SIZE = parseInt(val); setTxt('sign-sz-val', val); }
+function clearSignCanvas() { var cvs = document.getElementById('sign-canvas'); SIGN_CTX.fillStyle = '#ffffff'; SIGN_CTX.fillRect(0, 0, cvs.width, cvs.height); SIGN_HAS_STROKES = false; document.getElementById('sign-hint').style.display = 'flex'; }
+
+function saveSign() {
+  if (!SIGN_HAS_STROKES) { toast('Sila lukis tandatangan dahulu.', 'warn'); return; }
+  var jenis = S.signPending; var nama = document.getElementById('sign-nama-input').value.trim();
+  var cvs = document.getElementById('sign-canvas'); var b64 = cvs.toDataURL('image/png');
+  closeModal('ov-sign'); showLoad('Menyimpan tandatangan...');
+  callGAS('uploadTandatangan', {laporanId: S.currentLapId, jenis: jenis, base64Data: b64, nama: nama}, function(r) {
+    hideLoad();
+    if (!r.success) { toast(r.message, 'err'); return; }
+    S.sign[jenis] = r.data.url; S.signNama[jenis] = nama;
+    showSignFromUrl(jenis, r.data.url, nama);
+    toast('Tandatangan disimpan', 'ok');
+  }, function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+function clearSign(jenis, e) {
+  e.stopPropagation();
+  confirm_('Padam Tandatangan?', 'Tandatangan ini akan dipadam. Boleh tandatangan semula selepas ini.', function() {
+    showLoad('Memadamkan tandatangan...');
+    callGAS('deleteTandatangan', {laporanId: S.currentLapId, jenis: jenis},
+      function(r) { hideLoad(); if (!r.success) { toast(r.message, 'err'); return; } S.sign[jenis] = null; S.signNama[jenis] = ''; resetSignBox(jenis); toast('Tandatangan dipadam', 'ok'); },
+      function(e2) { hideLoad(); toast('Ralat: ' + e2.message, 'err'); });
+  }, 'Padam');
+}
+
+function showSignFromUrl(jenis, url, nama) {
+  var box = document.getElementById('sign-box-' + jenis); var img = document.getElementById('sign-img-' + jenis);
+  var ico = document.getElementById('sign-ico-' + jenis); var lbl = document.getElementById('sign-lbl-' + jenis);
+  var nm  = document.getElementById('sign-nm-' + jenis);
+  if (!box) return; box.classList.add('has-sign');
+  if (img) { img.src = driveImg(url, 'w400-h200'); img.style.display = 'block'; }
+  if (ico) ico.style.display = 'none'; if (lbl) lbl.style.display = 'none';
+  if (nm) nm.textContent = nama || '';
+}
+function resetSignBox(jenis) {
+  var box = document.getElementById('sign-box-' + jenis); var img = document.getElementById('sign-img-' + jenis);
+  var ico = document.getElementById('sign-ico-' + jenis); var lbl = document.getElementById('sign-lbl-' + jenis);
+  var nm  = document.getElementById('sign-nm-' + jenis);
+  if (!box) return; box.classList.remove('has-sign');
+  if (img) { img.src = ''; img.style.display = 'none'; }
+  if (ico) ico.style.display = ''; if (lbl) { lbl.style.display = ''; lbl.textContent = 'Ketuk untuk tandatangan'; }
+  if (nm) nm.textContent = '';
+}
+
+// ═══════════════════════════════════════════════
+// A4 PREVIEW (Admin)
+// ═══════════════════════════════════════════════
+function showA4Admin() {
+  if (!S.currentPrjData) { toast('Tiada laporan dipilih', 'err'); return; }
+  showLoad('Menyediakan preview...');
+  callGAS('getLaporanPreviewData', {perjumpaanId: S.currentPrjData.perjumpaanId, unitId: S.currentPrjData.unitId}, function(r) {
+    hideLoad();
+    if (!r.success) { toast(r.message, 'err'); return; }
+    renderA4(r.data);
+    showView('va4');
+  }, function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+function renderA4(d) {
+  var p = d.perjumpaan || {}, l = d.laporan || {}, u = d.unit || {}, kh = d.kehadiran || {};
+  var status = l.StatusLaporan || 'Draf';
+  var bilAhliHadir = (kh.hadir || 0) + ' / ' + (kh.totalAhli || 0);
+  var ph = function(i) { var url = l['Gambar' + i + 'URL'] || ''; return url ? '<img src="' + driveImg(url, 'w800-h800') + '" style="width:100%;height:100%;object-fit:cover">' : '<i class="ti ti-photo" style="font-size:20px;color:#ccc"></i>'; };
+  var signImg = function(jenis) { var urlKey = jenis === 'setiausaha' ? 'SignSetiausahaURL' : (jenis === 'guru' ? 'SignGuruURL' : 'SignGPKURL'); var url = S.sign[jenis] || l[urlKey] || ''; return url ? '<img class="a4-sign-img" src="' + driveImg(url, 'w400-h200') + '" alt="">' : ''; };
+  var signNm = function(jenis) { var nmKey = jenis === 'setiausaha' ? 'NamaSetiausaha' : (jenis === 'guru' ? 'NamaGuru' : 'NamaGPK'); return esc(S.signNama[jenis] || l[nmKey] || ''); };
+
+  var html = '<div class="a4-title"><h1>LAPORAN AKTIVITI PERJUMPAAN</h1></div>';
+  html += '<table class="a4-table" style="width:100%">';
+  html += '<tr><td class="a4-cell-green" style="width:33%"><strong>Bil. Perjumpaan :</strong> ' + esc(p.NoPerjumpaan || '—') + '</td><td class="a4-cell-green" style="width:33%"><strong>Tarikh :</strong> ' + esc(p.Tarikh || '—') + '</td><td class="a4-cell-green" style="width:34%"><strong>Masa :</strong> ' + esc(l.Masa || '—') + '</td></tr>';
+  html += '<tr><td class="a4-cell-purple" colspan="2"><strong>Tempat :</strong> ' + esc(l.Tempat || '—') + '</td><td class="a4-cell-purple"><strong>Bil. Ahli Hadir :</strong> ' + bilAhliHadir + '</td></tr>';
+  html += '<tr><td class="a4-cell-green" colspan="3"><strong>Guru Penasihat :</strong> ' + esc(d.penasihat || '—') + '</td></tr>';
+  html += '</table>';
+
+  html += '<table class="a4-table" style="width:100%;margin-top:-1px"><tr>';
+  html += '<td><div class="a4-row-hdr" style="text-align:center;padding:5px">Laporan Aktiviti</div><div style="min-height:80px;padding:6px;font-size:12px;white-space:pre-wrap;word-break:break-word">' + esc(l.Pelaksanaan || '') + '</div></td>';
+  html += '<td class="a4-photo-col"><div class="a4-photo-slot" style="height:120px">' + ph(1) + '</div></td></tr></table>';
+
+  html += '<table class="a4-table" style="width:100%;margin-top:-1px"><tr><td colspan="2" class="a4-row-hdr-purple" style="text-align:center;padding:5px">Sisipan PIKeBM (10 minit)</td></tr><tr>';
+  html += '<td style="padding:0"><table style="width:100%;border-collapse:collapse">';
+  html += '<tr><td class="cell-lbl a4-cell-purple" style="width:80px;border:none;border-bottom:1px solid #888;border-right:1px solid #888;padding:6px">Tajuk</td><td style="border:none;border-bottom:1px solid #888;border-right:1px solid #888;padding:6px;font-size:12px">' + esc(l.TajukPIKeBM || '') + '</td><td class="cell-lbl a4-cell-purple" style="width:80px;border:none;border-bottom:1px solid #888;border-right:1px solid #888;padding:6px">Bahan Bantu</td><td style="border:none;border-bottom:1px solid #888;padding:6px;font-size:12px">' + esc(l.BahanBantu || '') + '</td></tr>';
+  html += '<tr><td class="cell-lbl a4-cell-purple" style="border:none;border-bottom:1px solid #888;border-right:1px solid #888;padding:6px">Objektif</td><td colspan="3" style="border:none;border-bottom:1px solid #888;padding:6px;font-size:12px;min-height:50px;white-space:pre-wrap">' + esc(l.ObjektifPIKeBM || '') + '</td></tr>';
+  html += '<tr><td class="cell-lbl a4-cell-purple" style="border:none;border-bottom:1px solid #888;border-right:1px solid #888;padding:6px">Aktiviti</td><td colspan="3" style="border:none;border-bottom:1px solid #888;padding:6px;font-size:12px;min-height:50px;white-space:pre-wrap">' + esc(l.AktivitiPIKeBM || '') + '</td></tr>';
+  html += '<tr><td class="cell-lbl a4-cell-purple" style="border:none;border-right:1px solid #888;padding:6px">Refleksi</td><td colspan="3" style="border:none;padding:6px;font-size:12px;min-height:50px;white-space:pre-wrap">' + esc(l.RefleksiPIKeBM || '') + '</td></tr>';
+  html += '</table></td>';
+  html += '<td class="a4-photo-col" style="width:120px;vertical-align:top"><div class="a4-photo-slot">' + ph(2) + '</div><div class="a4-photo-slot">' + ph(3) + '</div><div class="a4-photo-slot">' + ph(4) + '</div></td></tr></table>';
+
+  html += '<table class="a4-table" style="width:100%;margin-top:-1px">';
+  html += '<tr><td colspan="2" class="a4-row-hdr-purple" style="text-align:center;padding:5px">Penerapan Nilai Sivik Dalam Kokurikulum (20 minit)</td></tr>';
+  html += '<tr><td class="cell-lbl a4-cell-purple" style="width:90px">Tema</td><td style="font-size:12px;padding:6px">' + esc(l.TemaSivik || '') + '</td></tr>';
+  html += '<tr><td class="cell-lbl a4-cell-purple">Matlamat</td><td style="font-size:12px;padding:6px;min-height:44px;white-space:pre-wrap">' + esc(l.MatlamatSivik || '') + '</td></tr>';
+  html += '<tr><td class="cell-lbl a4-cell-purple">Aktiviti</td><td style="font-size:12px;padding:6px;min-height:60px;white-space:pre-wrap">' + esc(l.AktivitiSivik || '') + '</td></tr>';
+  html += '</table>';
+
+  html += '<table class="a4-sign-table" style="margin-top:-1px"><tr class="a4-hdr-row"><td style="text-align:center;font-weight:600;font-size:11px;padding:5px;background:#c8e6c9">Tandatangan Setiausaha</td><td style="text-align:center;font-weight:600;font-size:11px;padding:5px;background:#c8e6c9">Tandatangan Guru Penasihat</td></tr>';
+  html += '<tr><td class="a4-sign-cell" style="height:80px;text-align:center;vertical-align:bottom;padding:6px">' + signImg('setiausaha') + '<div class="a4-sign-line"></div><div class="a4-sign-name">' + (signNm('setiausaha') || '...................................') + '</div></td>';
+  html += '<td class="a4-sign-cell" style="height:80px;text-align:center;vertical-align:bottom;padding:6px">' + signImg('guru') + '<div class="a4-sign-line"></div><div class="a4-sign-name">' + (signNm('guru') || esc(d.penasihat || '...................................')) + '</div></td></tr></table>';
+
+  html += '<table class="a4-sign-table" style="margin-top:-1px"><tr class="a4-hdr-row"><td style="text-align:center;font-weight:600;font-size:11px;padding:5px;background:#c8e6c9">Catatan Pemantauan</td><td style="text-align:center;font-weight:600;font-size:11px;padding:5px;background:#c8e6c9">Tandatangan GPK Kokurikulum</td></tr>';
+  html += '<tr><td style="min-height:80px;height:80px;padding:8px;font-size:12px;vertical-align:top;white-space:pre-wrap">' + esc(l.CatatanPemantauan || document.getElementById('lad-catatan').value || '') + '</td>';
+  html += '<td class="a4-sign-cell" style="height:80px;text-align:center;vertical-align:bottom;padding:6px">' + signImg('gpk') + '<div class="a4-sign-line"></div><div class="a4-sign-name">' + (signNm('gpk') || '...................................') + '</div></td></tr></table>';
+
+  html += '<div class="a4-ft"><span class="a4-ft-txt">Dijana oleh eKoCBA4082 · ' + new Date().toLocaleDateString('ms-MY') + ' · ' + esc(d.sekolah || '') + '</span><span class="a4-status ' + (status === 'Selesai' ? 'a4-s-done' : 'a4-s-draf') + '">' + status + '</span></div>';
+  document.getElementById('a4-doc').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════
+// TAHUN BARU
+// ═══════════════════════════════════════════════
+function loadTahunInfo() {
+  callGAS('getAppSettings', {},
+    function(r) { if (!r.success) return; var curr = parseInt(r.data.activeYear) || new Date().getFullYear(); var next = curr + 1; setTxt('tb-curr', curr); ['tb-new','tb-new2','tb-new3','tb-new4'].forEach(function(id) { setTxt(id, next); }); },
+    function() {});
+}
+function confirmBukaTahun() { var next = document.getElementById('tb-new').textContent; confirm_('Buka Tahun ' + next + '?', 'Spreadsheet baharu akan dijana. Data lama kekal untuk rujukan. Tindakan ini tidak boleh dibatalkan.', function() { doBukaTahun(); }, 'Buka Tahun ' + next); }
+function doBukaTahun() {
+  showLoad('Membuka tahun baru...');
+  callGAS('bukaTabunBaru', {},
+    function(r) { hideLoad(); if (r.success) { toast('Tahun ' + r.data.newYear + ' berjaya dibuka', 'ok'); loadTahunInfo(); S.settings.activeYear = r.data.newYear; setTxt('snav-yr', r.data.newYear); setTxt('l-yr', r.data.newYear); } else toast(r.message, 'err'); },
+    function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+// ═══════════════════════════════════════════════
+// TETAPAN
+// ═══════════════════════════════════════════════
+function loadSettings() {
+  callGAS('getAppSettings', {}, function(r) {
+    if (!r.success) return; var s = r.data;
+    document.getElementById('sp-scl').value = s.schoolName || '';
+    document.getElementById('sp-url').value = s.guruWebAppUrl || '';
+    ['sp-old','sp-new','sp-cnf'].forEach(function(id) { document.getElementById(id).value = ''; });
+    document.getElementById('sys-info').innerHTML = '<div>App: <strong>eKoCBA4082</strong></div><div>Tahun aktif: <strong>' + s.activeYear + '</strong></div><div style="word-break:break-all">URL Admin: ' + esc(s.adminWebAppUrl || 'Belum ditetapkan') + '</div><div>Dikemas kini: ' + (s.lastUpdated || '—') + '</div>';
+  }, function() {});
+}
+function doChangePin() {
+  var old = document.getElementById('sp-old').value; var nw = document.getElementById('sp-new').value; var cnf = document.getElementById('sp-cnf').value;
+  clearAllFieldErr(['sp-old','sp-new','sp-cnf']); var valid = true;
+  if (!old) { showFieldErr('sp-old', 'Sila masukkan PIN semasa'); valid = false; }
+  if (!nw) { showFieldErr('sp-new', 'Sila masukkan PIN baru'); valid = false; }
+  else if (!/^\d{4}$/.test(nw)) { showFieldErr('sp-new', 'PIN mesti tepat 4 digit nombor'); valid = false; }
+  if (nw && cnf && nw !== cnf) { showFieldErr('sp-cnf', 'PIN tidak sepadan'); valid = false; }
+  if (!valid) return;
+  showLoad();
+  callGAS('changePin', {oldPin: old, newPin: nw, confirmPin: cnf},
+    function(r) { hideLoad(); if (r.success) { toast('PIN berjaya ditukar', 'ok'); ['sp-old','sp-new','sp-cnf'].forEach(function(id) { document.getElementById(id).value = ''; }); } else { toast(r.message, 'err'); showFieldErr('sp-old', 'PIN semasa tidak sah'); } },
+    function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+function doUpdateSchool() {
+  var name = document.getElementById('sp-scl').value.trim();
+  if (!name) { toast('Nama tidak boleh kosong', 'err'); return; }
+  showLoad();
+  callGAS('updateSchoolName', {name: name},
+    function(r) { hideLoad(); if (r.success) { toast('Nama sekolah dikemas kini', 'ok'); setTxt('l-school', name); setTxt('snav-school', name); } else toast(r.message, 'err'); },
+    function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+function doUpdateGuruUrl() {
+  var url = document.getElementById('sp-url').value.trim();
+  if (!url) { toast('URL tidak boleh kosong', 'err'); return; }
+  showLoad();
+  callGAS('updateGuruUrl', {url: url},
+    function(r) { hideLoad(); if (r.success) toast('URL disimpan', 'ok'); else toast(r.message, 'err'); },
+    function(e) { hideLoad(); toast('Ralat: ' + e.message, 'err'); });
+}
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function confirm_(ttl, msg, onOk, okLbl, danger) { setTxt('conf-ttl', ttl); setTxt('conf-msg', msg); var btn = document.getElementById('conf-ok'); btn.textContent = okLbl || 'Teruskan'; btn.className = 'btn ' + (danger === false ? 'btn-p' : 'btn-d'); btn.onclick = function() { closeModal('ov-conf'); onOk(); }; openModal('ov-conf'); }
+function showFieldErr(id, msg) { var el = document.getElementById(id); if (el) el.classList.add('error'); var errEl = document.getElementById(id + '-err'); if (errEl) { errEl.textContent = msg; errEl.classList.add('show'); } }
+function clearFieldErr(id) { var el = document.getElementById(id); if (el) el.classList.remove('error'); var errEl = document.getElementById(id + '-err'); if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); } }
+function clearAllFieldErr(ids) { ids.forEach(function(id) { clearFieldErr(id); }); }
+function openModal(id) { document.getElementById(id).classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+var toastTimer;
+function toast(msg, type, dur) { var el = document.getElementById('toast'); clearTimeout(toastTimer); el.className = ''; requestAnimationFrame(function() { el.textContent = msg; el.className = 'show' + (type === 'err' ? ' err' : type === 'ok' ? ' ok' : type === 'warn' ? ' warn' : ''); toastTimer = setTimeout(function() { el.classList.remove('show'); }, dur || (type === 'err' ? 4000 : 2000)); }); el.onclick = function() { clearTimeout(toastTimer); el.classList.remove('show'); }; }
+function showLoad(msg) { document.getElementById('loader').classList.add('show'); var t = document.getElementById('ld-txt'); if (t) t.textContent = msg || 'Sila tunggu...'; }
+function hideLoad() { document.getElementById('loader').classList.remove('show'); }
+function skelHtml(n) { var h = '<div class="card">'; for (var i = 0; i < (n || 3); i++) { h += '<div class="li" style="cursor:default"><div class="skel" style="width:38px;height:38px;border-radius:10px;flex-shrink:0"></div><div class="li-info"><div class="skel" style="height:13px;width:60%;margin-bottom:7px;border-radius:4px"></div><div class="skel" style="height:11px;width:38%;border-radius:4px"></div></div></div>'; } return h + '</div>'; }
+function unitName(uid) { var u = S.allUnits.find(function(u) { return u.UnitID === uid; }); return u ? u.NamaUnit : uid; }
+function setTxt(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+// FIX: Guna lh3.googleusercontent.com — elak ralat akaun pelbagai Android
+// drive.google.com/thumbnail memerlukan cookie akaun Google; lh3 tidak perlu.
+function driveImg(url, sz) {
+  if (!url) return '';
+  var m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/) ||
+          url.match(/\/d\/([a-zA-Z0-9_-]+)(?:[=?&]|$)/);
+  if (m) return 'https://lh3.googleusercontent.com/d/' + m[1] + '=' + (sz || 'w200-h200');
+  return url;
+}
+</script>
+</body>
+</html>
